@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="background_primary">#222831</color>
-    <color name="background_surface">#393E46</color>
-    <color name="text_on_background">#DFD0B8</color>
-    <color name="text_on_surface">#948979</color>
+    <color name="background_primary">#2D4356</color>
+    <color name="background_surface">#435B66</color>
+    <color name="text_on_background">#A76F6F</color>
+    <color name="text_on_surface">#EAB2A0</color>
+    <color name="btn_login">#EAB2A0</color>
+    <color name="btn_register">#A76F6F</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
