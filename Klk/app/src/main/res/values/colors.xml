@@ -2,11 +2,24 @@
 <resources>
     <color name="background_primary">#EAB2A0</color>
     <color name="background_surface">#A76F6F</color>
+    
     <color name="text_on_background">#435B66</color>
     <color name="text_on_surface">#2D4356</color>
+    
     <color name="btn_login">#435B66</color>
-    <color name="btn_register">#2D4356</color>
+    <color name="btn_register_inactive">#2D4356</color>
+    <color name="btn_register_active">#3C8639</color>
     <color name="btn_logout">#E6EE1313</color>
+    
+    <color name="text_on_btn_login">#FFFFFFFF</color>
+    <color name="text_on_btn_register">#FFFFFFFF</color>
+    <color name="text_on_btn_logout">#FFFFFFFF</color>
+
+    <color name="input_field">#FFD369</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="blue">#0022FF</color>
+
 </resources>

@@ -39,13 +39,19 @@ public class Login extends AppCompatActivity {
 
         Button btnRegister = findViewById(R.id.btnRegister);
         Button btnLogin = findViewById(R.id.btnLogin);
-        TextInputEditText emailField = findViewById(R.id.email);
-        TextInputEditText usernameField = findViewById(R.id.username);
-        TextInputEditText passwordField = findViewById(R.id.password);
+        TextInputEditText emailField = findViewById(R.id.emailField);
+        TextInputEditText usernameField = findViewById(R.id.usernameField);
+        TextInputEditText passwordField = findViewById(R.id.passwordField);
 
         // Toggle between login and register modes
         btnRegister.setOnClickListener(v -> {
             isRegistering = !isRegistering;
+            // change background tint to active
+            androidx.core.content.ContextCompat.getColor(
+                    this,
+                    isRegistering ? R.color.btn_register_active : R.color.btn_register_inactive
+            );
+
             emailField.setVisibility(isRegistering ? View.VISIBLE : View.GONE);
             btnLogin.setText(isRegistering ? "Registrarse" : "Iniciar Sesión");
             btnRegister.setText(isRegistering ? "¿Ya tienes cuenta? Inicia Sesión" : "Regístrate");

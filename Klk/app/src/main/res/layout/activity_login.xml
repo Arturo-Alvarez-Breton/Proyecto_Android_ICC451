@@ -15,23 +15,14 @@
             android:gravity="center"
             android:orientation="vertical">
 
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_launcher_foreground" android:scaleX="2" android:scaleY="2"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Login"
-                android:textColor="@color/text_on_background"
-                android:textSize="24sp"
-                android:layout_marginTop="16dp"/>
+<!--        <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:src="@drawable/ic_launcher_foreground" android:scaleX="2" android:scaleY="2"/>-->
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email"
+                android:id="@+id/emailField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -39,9 +30,9 @@
                 android:layout_marginEnd="32dp"
                 android:hint="Correo Electrónico"
                 android:inputType="textEmailAddress"
-                android:backgroundTint="@color/text_on_surface"
-                android:textColor="@color/text_on_surface"
-                android:textColorHint="@color/text_on_surface"
+                android:backgroundTint="@color/input_field"
+                android:textColor="@color/input_field"
+                android:textColorHint="@color/input_field"
                 android:visibility="gone"/>
 
         <com.google.android.material.textfield.TextInputEditText
@@ -52,10 +43,10 @@
                 android:layout_marginEnd="32dp"
                 android:hint="Usuario"
                 android:inputType="text"
-                android:id="@+id/username"
-                android:backgroundTint="@color/text_on_surface"
-                android:textColor="@color/text_on_surface"
-                android:textColorHint="@color/text_on_surface"/>
+                android:id="@+id/usernameField"
+                android:backgroundTint="@color/input_field"
+                android:textColor="@color/input_field"
+                android:textColorHint="@color/input_field"/>
 
         <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -65,15 +56,17 @@
                 android:layout_marginEnd="32dp"
                 android:hint="Conraseña"
                 android:inputType="text"
-                android:id="@+id/password"
-                android:backgroundTint="@color/text_on_surface"
+                android:id="@+id/passwordField"
+                android:backgroundTint="@color/input_field"
                 android:textColor="@color/text_on_surface"
-                android:textColorHint="@color/text_on_surface"/>
+                android:textColorHint="@color/input_field"/>
 
         <Button
                 android:id="@+id/btnLogin"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:text="Iniciar Sesión"
@@ -82,13 +75,16 @@
 
         <Button
                 android:id="@+id/btnRegister"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:text="Registrate"
-                android:backgroundTint="@color/btn_register"
+                android:backgroundTint="@color/btn_register_inactive"
                 android:textColor="@color/white"/>
+
     </LinearLayout>
 
     <TextView

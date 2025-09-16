@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="background_primary">#2D4356</color>
-    <color name="background_surface">#435B66</color>
-    <color name="text_on_background">#A76F6F</color>
-    <color name="text_on_surface">#EAB2A0</color>
-    <color name="btn_login">#EAB2A0</color>
-    <color name="btn_register">#A76F6F</color>
+    <color name="background_primary">#222831</color>
+    <color name="background_surface">#393E46</color>
+
+    <color name="text_on_background">#FFD369</color>
+    <color name="text_on_surface">#EEEEEE</color>
+
+    <color name="btn_login">#3C8639</color>
+    <color name="btn_register_inactive">#2D4356</color>
+    <color name="btn_register_active">#3C8639</color>
     <color name="btn_logout">#9EEE2727</color>
+
+    <color name="text_on_btn_login">#222831</color>
+    <color name="text_on_btn_register">#222831</color>
+    <color name="text_on_btn_logout">#FFFFFFFF</color>
+
+    <color name="input_field">#EEEEEE</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="blue">#0022FF</color>
+
 </resources>
