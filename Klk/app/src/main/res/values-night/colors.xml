@@ -7,6 +7,7 @@
     <color name="text_on_surface">#EAB2A0</color>
     <color name="btn_login">#EAB2A0</color>
     <color name="btn_register">#A76F6F</color>
+    <color name="btn_logout">#9EEE2727</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
