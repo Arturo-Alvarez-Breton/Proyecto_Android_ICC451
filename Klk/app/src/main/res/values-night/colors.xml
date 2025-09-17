@@ -16,10 +16,13 @@
     <color name="btn_new_group">#3C8639</color>
     <color name="btn_nav_bar">#212327</color>
     <color name="btn_menu">#212327</color>
+    <color name="btn_chats_filters_inactive">#80393E46</color>
+    <color name="btn_chats_filters_active">#80DFD0B8</color>
 
     <color name="text_on_btn_login">#222831</color>
     <color name="text_on_btn_register">#222831</color>
     <color name="text_on_btn_logout">#FFFFFFFF</color>
+    <color name="text_on_btn_chats_filters">#FFFFFFFF</color>
 
     <color name="input_field">#EEEEEE</color>
     <color name="input_field_hint">#80FFFFFF</color>

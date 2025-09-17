@@ -13,13 +13,16 @@
     <color name="btn_register_inactive">#3A6080</color>
     <color name="btn_register_active">#3C8639</color>
     <color name="btn_logout">#9EEE2727</color>
+    <color name="btn_new_group">#3C8639</color>
+    <color name="btn_nav_bar">#FFFFFF</color>
+    <color name="btn_menu">#FFFFFF</color>
+    <color name="btn_chats_filters_inactive">#80EEEEEE</color>
+    <color name="btn_chats_filters_active">#803A6080</color>
 
     <color name="text_on_btn_login">#FFFFFF</color>
     <color name="text_on_btn_register">#FFFFFF</color>
     <color name="text_on_btn_logout">#FFFFFF</color>
-    <color name="btn_new_group">#3C8639</color>
-    <color name="btn_nav_bar">#FFFFFF</color>
-    <color name="btn_menu">#FFFFFF</color>
+    <color name="text_on_btn_chats_filters">#80212327</color>
 
     <color name="input_field">#212327</color>
     <color name="input_field_hint">#80212327</color>

@@ -82,6 +82,44 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/searchBar"
+        android:padding="16dp">
+
+        <Button
+                android:id="@+id/btnAllChatsFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/btn_chats_filters_active"
+                android:textColor="@color/text_on_btn_chats_filters"
+                android:text="@string/btn_all_chats_filter"
+                android:layout_marginBottom="8dp"/>
+
+        <Button
+                android:id="@+id/btnGroupChatsFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/btn_chats_filters_inactive"
+                android:textColor="@color/text_on_btn_chats_filters"
+                android:text="@string/btn_groups_chats_filter"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="5dp"/>
+
+        <Button
+                android:id="@+id/btnContactsChatsFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/btn_chats_filters_inactive"
+                android:textColor="@color/text_on_btn_chats_filters"
+                android:text="@string/btn_contacts_chats_filter"
+                android:layout_marginLeft="5dp"/>
+
+
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
