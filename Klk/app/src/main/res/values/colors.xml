@@ -3,6 +3,8 @@
 
     <color name="background_primary">#FFFFFF</color>
     <color name="background_surface">#EEEEEE</color>
+    <color name="background_tool_bar">#FFFFFF</color>
+    <color name="background_search_bar">#FFFFFF</color>
 
     <color name="text_on_background">#393E46</color>
     <color name="text_on_surface">#212327</color>
@@ -15,6 +17,9 @@
     <color name="text_on_btn_login">#FFFFFF</color>
     <color name="text_on_btn_register">#FFFFFF</color>
     <color name="text_on_btn_logout">#FFFFFF</color>
+    <color name="btn_new_group">#3C8639</color>
+    <color name="btn_nav_bar">#FFFFFF</color>
+    <color name="btn_menu">#FFFFFF</color>
 
     <color name="input_field">#212327</color>
     <color name="input_field_hint">#80212327</color>

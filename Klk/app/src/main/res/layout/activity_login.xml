@@ -29,7 +29,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:hint="Correo Electrónico"
+                android:hint="@string/input_email"
                 android:inputType="textEmailAddress"
                 android:background="@drawable/input_field_background"
                 android:textColor="@color/input_field"
@@ -44,7 +44,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:hint="Usuario"
+                android:hint="@string/input_username"
                 android:inputType="text"
                 android:background="@drawable/input_field_background"
                 android:textColor="@color/input_field"
@@ -57,7 +57,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:hint="Conraseña"
+                android:hint="@string/input_password"
                 android:inputType="text"
                 android:id="@+id/passwordField"
                 android:background="@drawable/input_field_background"
@@ -73,7 +73,7 @@
                 android:layout_marginEnd="32dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Iniciar Sesión"
+                android:text="@string/btn_login"
                 android:backgroundTint="@color/btn_login"
                 android:textColor="@color/white"/>
 
@@ -85,7 +85,7 @@
                 android:layout_marginEnd="32dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Registrate"
+                android:text="@string/btn_register"
                 android:backgroundTint="@color/btn_register_inactive"
                 android:textColor="@color/white"/>
 
@@ -94,7 +94,7 @@
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="App version 0.0.1"
+            android:text="@string/app_version"
             android:layout_alignParentBottom="true"
             android:gravity="center"
             android:layout_marginBottom="20dp"
