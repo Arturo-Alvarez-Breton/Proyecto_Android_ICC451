@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Klk</string>
+    <string name="btn_login">Iniciar Sesión</string>
+    <string name="btn_logout">Cerrar Sesión</string>
+    <string name="btn_register">Registrar</string>
+    <string name="btn_new_group">Nuevo grupo</string>
+    <string name="input_search_bar">Buscar</string>
+    <string name="input_email">Correo Electrónico</string>
+    <string name="input_username">Usuario</string>
+    <string name="input_password">Contraseña</string>
+    <string name="app_version">App Version 0.0.2</string>
+    <string name="btn_all_chats_filter">Todos</string>
+    <string name="btn_groups_chats_filter">Grupos</string>
+    <string name="btn_contacts_chats_filter">Contactos</string>
+
+</resources>
