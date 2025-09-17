@@ -13,7 +13,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/background_primary">
 
 <!--        <ImageView-->
 <!--                android:layout_width="wrap_content"-->
@@ -30,12 +31,14 @@
                 android:layout_marginEnd="32dp"
                 android:hint="Correo Electrónico"
                 android:inputType="textEmailAddress"
-                android:backgroundTint="@color/input_field"
+                android:background="@drawable/input_field_background"
                 android:textColor="@color/input_field"
-                android:textColorHint="@color/input_field"
+                android:textColorHint="@color/input_field_hint"
+                android:textSize="16sp"
                 android:visibility="gone"/>
 
         <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/usernameField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -43,10 +46,10 @@
                 android:layout_marginEnd="32dp"
                 android:hint="Usuario"
                 android:inputType="text"
-                android:id="@+id/usernameField"
-                android:backgroundTint="@color/input_field"
+                android:background="@drawable/input_field_background"
                 android:textColor="@color/input_field"
-                android:textColorHint="@color/input_field"/>
+                android:textColorHint="@color/input_field_hint"
+                android:textSize="16sp"/>
 
         <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -57,9 +60,10 @@
                 android:hint="Conraseña"
                 android:inputType="text"
                 android:id="@+id/passwordField"
-                android:backgroundTint="@color/input_field"
-                android:textColor="@color/text_on_surface"
-                android:textColorHint="@color/input_field"/>
+                android:background="@drawable/input_field_background"
+                android:textColor="@color/input_field"
+                android:textColorHint="@color/input_field_hint"
+                android:textSize="16sp"/>
 
         <Button
                 android:id="@+id/btnLogin"
