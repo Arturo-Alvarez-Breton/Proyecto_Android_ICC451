@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permisos necesarios para Firebase Authentication -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
             android:allowBackup="true"
             android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,22 +16,31 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Klk"
             tools:targetApi="31">
-        <activity
-                android:name=".Login"
-                android:exported="false"/>
+
+        <!-- Splash Activity - Pantalla de inicio -->
         <activity
                 android:name=".SplashActivity"
-                android:exported="true">
+                android:exported="true"
+                android:theme="@style/Theme.Klk.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- Login Activity - Autenticación -->
+        <activity
+                android:name=".Login"
+                android:exported="false"
+                android:theme="@style/Theme.Klk.NoActionBar"
+                android:windowSoftInputMode="adjustResize"/>
+
+        <!-- Main Activity - Pantalla principal del chat -->
         <activity
                 android:name=".MainActivity"
-                android:exported="false">
-        </activity>
+                android:exported="false"
+                android:theme="@style/Theme.Klk"/>
+
     </application>
 
 </manifest>
