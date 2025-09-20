@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Klk"
+rootProject.name = "Proyecto_Android_ICC451"
 include(":app")
- 
