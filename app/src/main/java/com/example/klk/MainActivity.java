@@ -2,26 +2,24 @@ package com.example.klk;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.EditText;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import com.example.klk.models.User;
-import com.example.klk.repositories.AuthRepository;
-
+import com.example.klk.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
 
-    private AuthRepository authRepository;
-    private TextView welcomeText;
-    private TextView userEmailText;
-    private Button btnLogout;
+    private SessionManager sessionManager;
+    private EditText chatSearchField;
+    private Button btnAllChatsFilter, btnGroupChatsFilter, btnContactsChatsFilter;
+    private Button btnSettings, btnLogout, btnNewGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,24 +28,38 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initializeComponents();
+        checkUserSession();
         setupWindowInsets();
-        checkAuthentication();
-        setupClickListeners();
-        loadUserData();
+        setupEventListeners();
     }
 
     /**
-     * Inicializa todos los componentes de la UI y el repositorio.
+     * Inicializa todos los componentes de la UI y servicios necesarios
      */
     private void initializeComponents() {
-        authRepository = new AuthRepository(this);
-        welcomeText = findViewById(R.id.welcomeText);
-        userEmailText = findViewById(R.id.userEmailText);
+        sessionManager = new SessionManager(this);
+
+        // Referencias a elementos de UI
+        chatSearchField = findViewById(R.id.chatSearchField);
+        btnAllChatsFilter = findViewById(R.id.btnAllChatsFilter);
+        btnGroupChatsFilter = findViewById(R.id.btnGroupChatsFilter);
+        btnContactsChatsFilter = findViewById(R.id.btnContactsChatsFilter);
+        btnSettings = findViewById(R.id.btnSettings);
         btnLogout = findViewById(R.id.btnLogout);
+        btnNewGroup = findViewById(R.id.btnNewGroup);
     }
 
     /**
-     * Configura los window insets para edge-to-edge display.
+     * Verifica si el usuario tiene sesión válida
+     */
+    private void checkUserSession() {
+        if (!sessionManager.isLoggedIn()) {
+            navigateToLogin();
+        }
+    }
+
+    /**
+     * Configura los window insets para edge-to-edge display
      */
     private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -58,90 +70,107 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Verifica si el usuario está autenticado.
+     * Configura todos los listeners de eventos
      */
-    private void checkAuthentication() {
-        if (!authRepository.isUserAuthenticated()) {
-            navigateToLogin();
-            return;
-        }
+    private void setupEventListeners() {
+        setupSearchListener();
+        setupFilterButtons();
+        setupActionButtons();
+    }
 
-        // Sincronizar sesión con Firebase
-        authRepository.syncSession(new AuthRepository.AuthCallback() {
+    /**
+     * Configura el listener para el campo de búsqueda
+     */
+    private void setupSearchListener() {
+        chatSearchField.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onSuccess(User user) {
-                Log.d(TAG, "Sesión sincronizada correctamente");
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterChats(s.toString());
             }
 
             @Override
-            public void onError(String error) {
-                Log.w(TAG, "Error al sincronizar sesión: " + error);
-                // Si hay error, redirigir al login
-                navigateToLogin();
-            }
+            public void afterTextChanged(Editable s) {}
         });
     }
 
     /**
-     * Configura los listeners de los botones.
+     * Configura los botones de filtro
      */
-    private void setupClickListeners() {
+    private void setupFilterButtons() {
+        btnAllChatsFilter.setOnClickListener(v -> setActiveFilter(btnAllChatsFilter));
+        btnGroupChatsFilter.setOnClickListener(v -> setActiveFilter(btnGroupChatsFilter));
+        btnContactsChatsFilter.setOnClickListener(v -> setActiveFilter(btnContactsChatsFilter));
+    }
+
+    /**
+     * Configura los botones de acción
+     */
+    private void setupActionButtons() {
         btnLogout.setOnClickListener(v -> handleLogout());
+        btnSettings.setOnClickListener(v -> handleSettings());
+        btnNewGroup.setOnClickListener(v -> handleNewGroup());
     }
 
     /**
-     * Carga y muestra los datos del usuario.
+     * Maneja el filtrado de chats
      */
-    private void loadUserData() {
-        User currentUser = authRepository.getCurrentUser();
-        if (currentUser != null) {
-                        welcomeText.setText(getString(R.string.welcome_user, currentUser.getName()));
-            userEmailText.setText(currentUser.getEmail());
-        } else {
-            welcomeText.setText("¡Bienvenido!");
-            userEmailText.setText("");
-        }
+    private void filterChats(String query) {
+        // TODO: Implementar lógica de filtrado cuando se agregue la funcionalidad de chats
     }
 
     /**
-     * Maneja el proceso de cierre de sesión.
+     * Cambia el filtro activo
+     */
+    private void setActiveFilter(Button activeButton) {
+        // Resetear todos los botones
+        resetFilterButtons();
+
+        // Activar el botón seleccionado
+        activeButton.setBackgroundTintList(getColorStateList(R.color.btn_chats_filters_active));
+    }
+
+    /**
+     * Resetea el estado visual de todos los botones de filtro
+     */
+    private void resetFilterButtons() {
+        int inactiveColor = R.color.btn_chats_filters_inactive;
+        btnAllChatsFilter.setBackgroundTintList(getColorStateList(inactiveColor));
+        btnGroupChatsFilter.setBackgroundTintList(getColorStateList(inactiveColor));
+        btnContactsChatsFilter.setBackgroundTintList(getColorStateList(inactiveColor));
+    }
+
+    /**
+     * Maneja el cierre de sesión
      */
     private void handleLogout() {
-        authRepository.logoutUser(new AuthRepository.AuthCallback() {
-            @Override
-            public void onSuccess(User user) {
-                runOnUiThread(() -> {
-                    Toast.makeText(MainActivity.this, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show();
-                    navigateToLogin();
-                });
-            }
-
-            @Override
-            public void onError(String error) {
-                runOnUiThread(() -> {
-                    Log.e(TAG, "Error al cerrar sesión: " + error);
-                    Toast.makeText(MainActivity.this, "Error al cerrar sesión: " + error, Toast.LENGTH_SHORT).show();
-                    // Aún así navegar al login ya que la sesión local se limpió
-                    navigateToLogin();
-                });
-            }
-        });
+        sessionManager.clearSession();
+        navigateToLogin();
     }
 
     /**
-     * Navega a la pantalla de login.
+     * Maneja el acceso a configuraciones
+     */
+    private void handleSettings() {
+        // TODO: Implementar navegación a configuraciones
+    }
+
+    /**
+     * Maneja la creación de nuevo grupo
+     */
+    private void handleNewGroup() {
+        // TODO: Implementar navegación a creación de grupo
+    }
+
+    /**
+     * Navega a la pantalla de login
      */
     private void navigateToLogin() {
         Intent intent = new Intent(this, Login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Recargar datos del usuario cada vez que se resume la actividad
-        loadUserData();
     }
 }

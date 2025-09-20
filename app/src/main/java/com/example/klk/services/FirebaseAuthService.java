@@ -155,24 +155,19 @@ public class FirebaseAuthService implements AuthService {
      * Crea un objeto User desde FirebaseUser.
      */
     private User createUserFromFirebaseUser(FirebaseUser firebaseUser, String name) {
-        String displayName = name != null && !name.trim().isEmpty()
-            ? name.trim()
-            : firebaseUser.getEmail() != null
-                ? firebaseUser.getEmail().split("@")[0]
-                : "Usuario";
-
         return new User(
             firebaseUser.getUid(),
             firebaseUser.getEmail(),
-            displayName
+            name != null ? name : firebaseUser.getDisplayName()
         );
     }
 
     /**
-     * Valida entrada para registro.
+     * Valida entrada básica.
      */
     private boolean isValidInput(String email, String password, String name) {
-        return isValidEmailAndPassword(email, password) &&
+        return email != null && !email.trim().isEmpty() &&
+               password != null && password.length() >= 6 &&
                name != null && !name.trim().isEmpty();
     }
 
@@ -181,8 +176,7 @@ public class FirebaseAuthService implements AuthService {
      */
     private boolean isValidEmailAndPassword(String email, String password) {
         return email != null && !email.trim().isEmpty() &&
-               password != null && !password.trim().isEmpty() &&
-               password.length() >= 6;
+               password != null && !password.trim().isEmpty();
     }
 
     /**

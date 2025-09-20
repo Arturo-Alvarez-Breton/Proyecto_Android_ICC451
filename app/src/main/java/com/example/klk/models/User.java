@@ -51,6 +51,7 @@ public class User {
         this.email = email;
     }
 
+
     @PropertyName("name")
     public String getName() {
         return name;

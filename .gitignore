@@ -49,18 +49,22 @@ captures/
 # Comment next line if keeping position of elements in Navigation Editor is relevant for you
 .idea/navEditor.xml
 
-# Keystore files
-# Uncomment the following lines if you do not want to check your keystore files in.
-#*.jks
-#*.keystore
-
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 .cxx/
 
-# Google Services (e.g. APIs or Firebase)
-# Comment the following line if you want to check in your Google Services files
 google-services.json
+
+# Google API keys and secrets
+android/app/google-services.json
+*.keystore
+*.jks
+*.p12
+*.pem
+*.key
+*.der
+.env
+.env.*
 
 # Freeline
 freeline.py
@@ -110,10 +114,8 @@ obj/
 ehthumbs.db
 Thumbs.db
 
-# Firebase
-# Uncomment these if you don't want to commit Firebase configs
-# google-services.json
-# GoogleService-Info.plist
+google-services.json
+GoogleService-Info.plist
 
 # Fabric
 crashlytics.properties

@@ -46,8 +46,8 @@ public class SessionManager {
     }
 
     /**
-     * Recupera el usuario actual desde SharedPreferences.
-     * @return Objeto User si existe sesión, si no, retorna null.
+     * Recupera los datos del usuario desde SharedPreferences.
+     * @return El objeto usuario si existe sesión, null en caso contrario.
      */
     public User getUser() {
         String id = sharedPreferences.getString(KEY_USER_ID, null);

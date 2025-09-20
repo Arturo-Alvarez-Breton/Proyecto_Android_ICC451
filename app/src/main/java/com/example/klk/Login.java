@@ -259,6 +259,7 @@ public class Login extends AppCompatActivity {
         return isValid;
     }
 
+
     /**
      * Valida formato de email.
      */

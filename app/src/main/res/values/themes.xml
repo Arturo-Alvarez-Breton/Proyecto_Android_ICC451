@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.Klk" parent="Base.Theme.Klk"/>
+
+    <!-- Theme without ActionBar for Activities like Login and Splash -->
+    <style name="Theme.Klk.NoActionBar" parent="Theme.Klk">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

@@ -1,12 +1,30 @@
 <resources>
-    <string name="app_name">Klk</string>
-    <string name="btn_login">Iniciar Sesión</string>
-    <string name="btn_logout">Cerrar Sesión</string>
-    <string name="btn_register">Registrar</string>
+    <!-- Branding -->
+    <string name="app_name">KlK</string>
+    <string name="app_title">KlK</string>
+
+    <!-- Welcome messages -->
+    <string name="welcome_message">¡Bienvenido a KlK!</string>
+    <string name="welcome_user">¡Hola, %1$s!</string>
+    <string name="firebase_auth_feature">✓ Autenticación con Firebase</string>
+
+    <!-- Buttons -->
+    <string name="btn_login">Iniciar sesión</string>
+    <string name="btn_register">Registrarse</string>
+    <string name="action_login">Iniciar sesión</string>
+    <string name="action_register">Registrarse</string>
+
+    <!-- Toggle prompts -->
+    <string name="prompt_already_have_account">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="prompt_no_account">¿No tienes cuenta? Regístrate</string>
+
+    <!-- Other UI strings -->
+    <string name="btn_logout">Cerrar sesión</string>
     <string name="btn_new_group">Nuevo grupo</string>
     <string name="input_search_bar">Buscar</string>
-    <string name="input_email">Correo Electrónico</string>
+    <string name="input_email">Correo electrónico</string>
     <string name="input_username">Usuario</string>
+    <string name="input_full_name">Nombre completo</string>
     <string name="input_password">Contraseña</string>
     <string name="app_version">App Version 0.0.2</string>
     <string name="btn_all_chats_filter">Todos</string>
