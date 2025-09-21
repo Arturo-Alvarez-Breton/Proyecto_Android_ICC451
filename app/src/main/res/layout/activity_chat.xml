@@ -52,18 +52,21 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- RecyclerView para mostrar los mensajes -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMessages"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/background_surface"
-        android:clipToPadding="false"
-        android:paddingVertical="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/messageInputContainer"
-        app:layout_constraintTop_toBottomOf="@+id/chatToolbar"
-        tools:listitem="@layout/item_message_text_received" />
 
     <!-- Contenedor para el input de mensajes -->
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMessages"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/background_surface"
+            android:clipToPadding="false"
+            android:paddingVertical="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/messageInputContainer"
+            app:layout_constraintTop_toBottomOf="@+id/chatToolbar"
+            tools:listitem="@layout/item_message_text_received" tools:layout_editor_absoluteX="0dp"
+            app:layout_constraintVertical_bias="0.0"/>
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/messageInputContainer"
         android:layout_width="match_parent"

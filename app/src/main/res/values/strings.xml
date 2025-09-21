@@ -45,7 +45,7 @@
 
     <!-- Add User Activity strings -->
     <string name="title_add_user">Agregar Usuario</string>
-    <string name="hint_search_users">Buscar usuarios por nombre o email...</string>
+    <string name="hint_search_users">Buscar usuarios por nombre o email</string>
     <string name="empty_state_no_users">No hay usuarios registrados</string>
     <string name="desc_profile_image">Imagen de perfil</string>
 

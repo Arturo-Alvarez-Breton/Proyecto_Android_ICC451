@@ -5,6 +5,8 @@
     <color name="background_surface">#393E46</color>
     <color name="background_tool_bar">#212327</color>
     <color name="background_search_bar">#212327</color>
+    <color name="background_message_sent">#346D32</color>
+    <color name="background_message_received">#27292D</color>
 
     <color name="text_on_background">#D8D7D7</color>
     <color name="text_on_surface">#EEEEEE</color>
