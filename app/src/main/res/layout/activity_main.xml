@@ -24,13 +24,13 @@
                 android:textStyle="bold"
                 android:id="@+id/tvUsername"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="8dp"/>
 
         <Button
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:text="@string/btn_logout"
                 android:id="@+id/btnLogout"
                 android:backgroundTint="@color/btn_logout"
@@ -41,11 +41,11 @@
                 app:layout_constraintStart_toEndOf="@+id/tvUsername"/>
 
         <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:id="@+id/btnSettings"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="@color/btn_menu"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -53,8 +53,8 @@
                 app:iconTint="@color/text_on_surface"
                 app:iconGravity="textEnd"
                 app:iconSize="28dp"
-                app:iconPadding="8dp"
                 android:visibility="visible"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -70,8 +70,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:id="@+id/chatSearchField"
                 android:hint="@string/input_search_bar"
                 android:inputType="text"
@@ -84,12 +84,13 @@
     </LinearLayout>
 
     <LinearLayout
+            android:id="@+id/chatsFilters"
             style="?android:attr/buttonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_below="@id/searchBar"
-            android:padding="16dp">
+            android:padding="8dp">
 
         <Button
                 android:id="@+id/btnAllChatsFilter"
@@ -99,7 +100,8 @@
                 android:backgroundTint="@color/btn_chats_filters_active"
                 android:textColor="@color/text_on_btn_chats_filters"
                 android:text="@string/btn_all_chats_filter"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="0dp"/>
 
         <Button
                 android:id="@+id/btnGroupChatsFilter"
@@ -129,16 +131,17 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:layout_below="@id/searchBar">
+            android:layout_below="@id/chatsFilters">
 
         <!-- RecyclerView para mostrar la lista de chats -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewChats"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:clipToPadding="false"
-            android:paddingVertical="8dp"
+            android:paddingVertical="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -146,13 +149,13 @@
 
         <!-- Incluir el menú FAB -->
         <include
-            layout="@layout/fab_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                layout="@layout/fab_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
