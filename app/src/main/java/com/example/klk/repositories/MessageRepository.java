@@ -9,6 +9,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.ListenerRegistration;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -111,19 +113,18 @@ public class MessageRepository {
     public LiveData<List<Message>> getChatMessages(String chatId) {
         MutableLiveData<List<Message>> messagesLiveData = new MutableLiveData<>();
 
-        // Crear query ordenado por timestamp
-        Query query = messagesRef
-            .whereEqualTo("chatId", chatId)
-            .orderBy("timestamp", Query.Direction.ASCENDING);
-
         // Remover listener anterior si existe
         if (messagesListener != null) {
             messagesListener.remove();
         }
 
-        // Configurar listener en tiempo real
+        // Query sin orderBy (evita índice compuesto); ordenamos en cliente
+        Query query = messagesRef.whereEqualTo("chatId", chatId);
+
         messagesListener = query.addSnapshotListener((snapshots, error) -> {
             if (error != null) {
+                // Log y retornar lista vacía para evitar crasheos visibles
+                android.util.Log.e("MessageRepository", "Error escuchando mensajes: ", error);
                 messagesLiveData.setValue(new ArrayList<>());
                 return;
             }
@@ -135,6 +136,8 @@ public class MessageRepository {
                     message.setId(document.getId());
                     messages.add(message);
                 });
+                // Ordenar por timestamp ASC para mostrar cronológicamente
+                Collections.sort(messages, Comparator.comparingLong(Message::getTimestamp));
                 messagesLiveData.setValue(messages);
             }
         });

@@ -165,3 +165,4 @@ gradle.properties.local
 # Testing
 test-results/
 test-output/
+/.idea/copilotDiffState.xml
