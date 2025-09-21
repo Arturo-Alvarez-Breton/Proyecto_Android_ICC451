@@ -33,6 +33,21 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+
+    // CardView for message bubbles
+    implementation("androidx.cardview:cardview:1.0.0")
+
+    // RecyclerView for messages list
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+    // Lifecycle components for LiveData
+    implementation("androidx.lifecycle:lifecycle-livedata:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.6")
+
+    // Glide for image loading
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
     // Firebase BoM - gestiona todas las versiones de Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-auth")

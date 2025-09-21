@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
+
+    <!-- Imagen de perfil -->
+    <ImageView
+        android:id="@+id/imageProfile"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/circle_background"
+        android:contentDescription="@string/desc_profile_image"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/baseline_person_24" />
+
+    <!-- Indicador de online -->
+    <View
+        android:id="@+id/onlineIndicator"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/circle_online_indicator"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/imageProfile"
+        app:layout_constraintEnd_toEndOf="@+id/imageProfile"
+        tools:visibility="visible" />
+
+    <!-- Nombre del usuario -->
+    <TextView
+        android:id="@+id/textUserName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/text_on_background"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageProfile"
+        app:layout_constraintTop_toTopOf="@+id/imageProfile"
+        tools:text="Juan Pérez" />
+
+    <!-- Email del usuario -->
+    <TextView
+        android:id="@+id/textUserEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/input_field_hint"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/textUserName"
+        app:layout_constraintStart_toStartOf="@+id/textUserName"
+        app:layout_constraintTop_toBottomOf="@+id/textUserName"
+        tools:text="juan.perez@example.com" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

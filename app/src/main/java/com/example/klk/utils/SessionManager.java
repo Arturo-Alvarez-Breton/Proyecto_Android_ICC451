@@ -79,4 +79,52 @@ public class SessionManager {
     public boolean isLoggedIn() {
         return sharedPreferences.getString(KEY_USER_ID, null) != null;
     }
+
+    /**
+     * Obtiene el ID del usuario de la sesión actual.
+     * @return El ID del usuario o null si no hay sesión activa.
+     */
+    public String getUserId() {
+        return sharedPreferences.getString(KEY_USER_ID, null);
+    }
+
+    /**
+     * Obtiene el nombre del usuario de la sesión actual.
+     * @return El nombre del usuario o null si no hay sesión activa.
+     */
+    public String getUserName() {
+        return sharedPreferences.getString(KEY_USER_NAME, null);
+    }
+
+    /**
+     * Obtiene el email del usuario de la sesión actual.
+     * @return El email del usuario o null si no hay sesión activa.
+     */
+    public String getUserEmail() {
+        return sharedPreferences.getString(KEY_USER_EMAIL, null);
+    }
+
+    /**
+     * Obtiene la URL de la imagen de perfil del usuario de la sesión actual.
+     * @return La URL de la imagen de perfil o cadena vacía si no hay sesión activa.
+     */
+    public String getUserProfileImageUrl() {
+        return sharedPreferences.getString(KEY_USER_PROFILE_IMAGE_URL, "");
+    }
+
+    /**
+     * Verifica si el usuario está actualmente online según la sesión.
+     * @return true si el usuario está online, false en caso contrario.
+     */
+    public boolean isUserOnline() {
+        return sharedPreferences.getBoolean(KEY_USER_IS_ONLINE, false);
+    }
+
+    /**
+     * Obtiene la fecha de la última vez que el usuario estuvo online.
+     * @return Timestamp de la última vez online o 0 si no hay sesión activa.
+     */
+    public long getUserLastSeen() {
+        return sharedPreferences.getLong(KEY_USER_LAST_SEEN, 0);
+    }
 }

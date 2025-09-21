@@ -31,4 +31,33 @@
     <string name="btn_groups_chats_filter">Grupos</string>
     <string name="btn_contacts_chats_filter">Contactos</string>
 
+    <!-- Chat functionality strings -->
+    <string name="btn_back">Volver</string>
+    <string name="btn_send_message">Enviar mensaje</string>
+    <string name="btn_attach_image">Adjuntar imagen</string>
+    <string name="hint_type_message">Escribe un mensaje...</string>
+    <string name="desc_message_image">Imagen del mensaje</string>
+
+    <!-- Chat activity strings -->
+    <string name="error_invalid_chat_data">Error: Datos del chat no válidos</string>
+    <string name="error_send_message">Error al enviar mensaje: %1$s</string>
+    <string name="info_image_feature_coming_soon">Funcionalidad de imágenes próximamente</string>
+
+    <!-- Add User Activity strings -->
+    <string name="title_add_user">Agregar Usuario</string>
+    <string name="hint_search_users">Buscar usuarios por nombre o email...</string>
+    <string name="empty_state_no_users">No hay usuarios registrados</string>
+    <string name="desc_profile_image">Imagen de perfil</string>
+
+    <!-- FAB Menu strings -->
+    <string name="fab_add">Agregar</string>
+    <string name="fab_individual_chat">Chat individual</string>
+    <string name="fab_create_group">Crear grupo</string>
+    <string name="label_individual_chat">Chat Individual</string>
+    <string name="label_create_group">Crear Grupo</string>
+
+    <!-- Create Group Activity strings -->
+    <string name="title_create_group">Crear Grupo</string>
+    <string name="coming_soon_create_group">Funcionalidad de grupos próximamente</string>
+
 </resources>

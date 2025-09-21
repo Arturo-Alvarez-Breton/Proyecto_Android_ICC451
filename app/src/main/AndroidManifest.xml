@@ -41,6 +41,40 @@
                 android:exported="false"
                 android:theme="@style/Theme.Klk"/>
 
+        <!-- Chat Activity - Pantalla de mensajería en tiempo real -->
+        <activity
+                android:name=".ChatActivity"
+                android:exported="false"
+                android:theme="@style/Theme.Klk"
+                android:windowSoftInputMode="adjustResize"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <!-- Add User Activity - Pantalla para agregar usuarios -->
+        <activity
+                android:name=".AddUserActivity"
+                android:exported="false"
+                android:theme="@style/Theme.Klk"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <!-- Create Group Activity - Pantalla para crear grupos -->
+        <activity
+                android:name=".CreateGroupActivity"
+                android:exported="false"
+                android:theme="@style/Theme.Klk"
+                android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
     </application>
 
 </manifest>

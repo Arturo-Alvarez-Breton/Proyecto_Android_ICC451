@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -12,14 +13,45 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.klk.adapters.ChatListAdapter;
+import com.example.klk.models.Chat;
+import com.example.klk.models.User;
+import com.example.klk.repositories.ChatRepository;
+import com.example.klk.repositories.UserRepository;
 import com.example.klk.utils.SessionManager;
+import com.example.klk.utils.FabMenuHelper;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private SessionManager sessionManager;
     private EditText chatSearchField;
     private Button btnAllChatsFilter, btnGroupChatsFilter, btnContactsChatsFilter;
-    private Button btnSettings, btnLogout, btnNewGroup;
+    private Button btnSettings, btnLogout;
+    private RecyclerView recyclerViewChats;
+
+    // FAB Menu Components
+    private FloatingActionButton fabMain, fabIndividualChat, fabCreateGroup;
+    private View labelIndividualChat, labelCreateGroup, fabMenuOverlay;
+    private FabMenuHelper fabMenuHelper;
+
+    // Business Logic Components
+    private ChatListAdapter chatAdapter;
+    private ChatRepository chatRepository;
+    private UserRepository userRepository;
+
+    // Un solo observer para evitar conflictos (CORREGIDO)
+    private String currentFilter = "todos";
+    private LiveData<List<Chat>> currentChatsObservable;
+
+    // User data
+    private String currentUserId;
+    private String currentUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
         initializeComponents();
         checkUserSession();
+        setupRecyclerView();
+        setupFabMenu();
         setupWindowInsets();
         setupEventListeners();
+        registerCurrentUser();
+        loadChats();
     }
 
     /**
@@ -46,7 +82,45 @@ public class MainActivity extends AppCompatActivity {
         btnContactsChatsFilter = findViewById(R.id.btnContactsChatsFilter);
         btnSettings = findViewById(R.id.btnSettings);
         btnLogout = findViewById(R.id.btnLogout);
-        btnNewGroup = findViewById(R.id.btnNewGroup);
+        recyclerViewChats = findViewById(R.id.recyclerViewChats);
+
+        // FAB Menu Components
+        fabMain = findViewById(R.id.fabMain);
+        fabIndividualChat = findViewById(R.id.fabIndividualChat);
+        fabCreateGroup = findViewById(R.id.fabCreateGroup);
+        labelIndividualChat = findViewById(R.id.cardIndividualChat);
+        labelCreateGroup = findViewById(R.id.cardCreateGroup);
+        fabMenuOverlay = findViewById(R.id.fabMenuOverlay);
+
+        // Business Logic Components
+        chatRepository = ChatRepository.getInstance();
+        userRepository = UserRepository.getInstance();
+
+        // User data
+        currentUserId = sessionManager.getUserId();
+        currentUserName = sessionManager.getUserName();
+    }
+
+    /**
+     * Configura el menú FAB desplegable
+     */
+    private void setupFabMenu() {
+        fabMenuHelper = new FabMenuHelper(
+            fabMain, fabIndividualChat, fabCreateGroup,
+            labelIndividualChat, labelCreateGroup, fabMenuOverlay
+        );
+    }
+
+    /**
+     * Configura el RecyclerView para la lista de chats
+     */
+    private void setupRecyclerView() {
+        chatAdapter = new ChatListAdapter(this, currentUserId);
+        recyclerViewChats.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewChats.setAdapter(chatAdapter);
+
+        // Configurar listener para clicks en chats
+        chatAdapter.setOnChatClickListener(chat -> openChat(chat));
     }
 
     /**
@@ -100,9 +174,21 @@ public class MainActivity extends AppCompatActivity {
      * Configura los botones de filtro
      */
     private void setupFilterButtons() {
-        btnAllChatsFilter.setOnClickListener(v -> setActiveFilter(btnAllChatsFilter));
-        btnGroupChatsFilter.setOnClickListener(v -> setActiveFilter(btnGroupChatsFilter));
-        btnContactsChatsFilter.setOnClickListener(v -> setActiveFilter(btnContactsChatsFilter));
+        btnAllChatsFilter.setOnClickListener(v -> {
+            setActiveFilter(btnAllChatsFilter);
+            currentFilter = "todos";
+            loadChats();
+        });
+        btnGroupChatsFilter.setOnClickListener(v -> {
+            setActiveFilter(btnGroupChatsFilter);
+            currentFilter = "grupos";
+            loadChats();
+        });
+        btnContactsChatsFilter.setOnClickListener(v -> {
+            setActiveFilter(btnContactsChatsFilter);
+            currentFilter = "contactos";
+            loadChats();
+        });
     }
 
     /**
@@ -111,14 +197,84 @@ public class MainActivity extends AppCompatActivity {
     private void setupActionButtons() {
         btnLogout.setOnClickListener(v -> handleLogout());
         btnSettings.setOnClickListener(v -> handleSettings());
-        btnNewGroup.setOnClickListener(v -> handleNewGroup());
+
+        // Configurar FAB Menu
+        setupFabEventListeners();
     }
 
     /**
-     * Maneja el filtrado de chats
+     * Configura los listeners del menú FAB
+     */
+    private void setupFabEventListeners() {
+        // Botón principal - toggle del menú
+        fabMain.setOnClickListener(v -> fabMenuHelper.toggleMenu());
+
+        // Overlay - cerrar menú al tocar fuera
+        fabMenuOverlay.setOnClickListener(v -> fabMenuHelper.closeMenu());
+
+        // Chat individual
+        fabIndividualChat.setOnClickListener(v -> {
+            fabMenuHelper.closeMenu();
+            openAddUserActivity();
+        });
+
+        labelIndividualChat.setOnClickListener(v -> {
+            fabMenuHelper.closeMenu();
+            openAddUserActivity();
+        });
+
+        // Crear grupo
+        fabCreateGroup.setOnClickListener(v -> {
+            fabMenuHelper.closeMenu();
+            openCreateGroupActivity();
+        });
+
+        labelCreateGroup.setOnClickListener(v -> {
+            fabMenuHelper.closeMenu();
+            openCreateGroupActivity();
+        });
+    }
+
+    /**
+     * Carga los chats del usuario según el filtro activo (Simplificado - DRY)
+     */
+    private void loadChats() {
+        String searchQuery = chatSearchField.getText().toString().trim();
+
+        if (!searchQuery.isEmpty()) {
+            // Búsqueda usa los datos ya cargados (más eficiente)
+            chatRepository.searchChats(currentUserId, searchQuery)
+                .observe(this, chats -> {
+                    if (chats != null) {
+                        chatAdapter.updateChats(chats);
+                    }
+                });
+        } else {
+            // Un solo método para todos los casos (KISS principle)
+            chatRepository.getUserChats(currentUserId, currentFilter)
+                .observe(this, chats -> {
+                    if (chats != null) {
+                        chatAdapter.updateChats(chats);
+                    }
+                });
+        }
+    }
+
+    /**
+     * Maneja el filtrado de chats por búsqueda (Simplificado)
      */
     private void filterChats(String query) {
-        // TODO: Implementar lógica de filtrado cuando se agregue la funcionalidad de chats
+        if (query.trim().isEmpty()) {
+            loadChats(); // Reutilizar lógica existente
+        } else {
+            // Usar búsqueda optimizada
+            chatRepository.searchChats(currentUserId, query)
+                .observe(this, chats -> {
+                    if (chats != null) {
+                        chatAdapter.updateChats(chats);
+                    }
+                });
+        }
     }
 
     /**
@@ -158,10 +314,127 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Maneja la creación de nuevo grupo
+     * Abre la actividad para agregar usuarios (chat individual)
      */
-    private void handleNewGroup() {
-        // TODO: Implementar navegación a creación de grupo
+    private void openAddUserActivity() {
+        Intent intent = new Intent(this, AddUserActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Abre la actividad para crear grupos
+     */
+    private void openCreateGroupActivity() {
+        Intent intent = new Intent(this, CreateGroupActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Registra al usuario actual en la base de datos
+     */
+    private void registerCurrentUser() {
+        String userEmail = sessionManager.getUserEmail();
+        User currentUser = new User(currentUserId, userEmail, currentUserName);
+        currentUser.setOnline(true);
+
+        userRepository.addUser(currentUser, new UserRepository.UserCallback() {
+            @Override
+            public void onSuccess(User user) {
+                // Usuario registrado exitosamente
+            }
+
+            @Override
+            public void onError(String error) {
+                // Error al registrar usuario - continuar normalmente
+            }
+        });
+    }
+
+    /**
+     * Abre un chat específico
+     */
+    private void openChat(Chat chat) {
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra(ChatActivity.EXTRA_CHAT_ID, chat.getId());
+
+        // Obtener nombre del chat para mostrar
+        String chatName = getChatDisplayName(chat);
+        intent.putExtra(ChatActivity.EXTRA_CHAT_NAME, chatName);
+
+        startActivity(intent);
+    }
+
+    /**
+     * Obtiene el nombre del chat para mostrar
+     */
+    private String getChatDisplayName(Chat chat) {
+        if (chat.getParticipantNames().size() == 2) {
+            // Chat individual - mostrar nombre del otro usuario
+            for (int i = 0; i < chat.getParticipantIds().size(); i++) {
+                if (!chat.getParticipantIds().get(i).equals(currentUserId)) {
+                    return chat.getParticipantNames().get(i);
+                }
+            }
+        } else if (chat.getParticipantNames().size() > 2) {
+            // Chat grupal - mostrar nombres de participantes
+            StringBuilder groupName = new StringBuilder();
+            for (int i = 0; i < chat.getParticipantNames().size(); i++) {
+                if (!chat.getParticipantIds().get(i).equals(currentUserId)) {
+                    if (groupName.length() > 0) {
+                        groupName.append(", ");
+                    }
+                    groupName.append(chat.getParticipantNames().get(i));
+                }
+            }
+            return groupName.toString();
+        }
+        return "Chat";
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Actualizar estado online del usuario
+        if (currentUserId != null) {
+            userRepository.updateUserOnlineStatus(currentUserId, true);
+        }
+        // Recargar chats al volver a la actividad
+        loadChats();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Actualizar estado offline del usuario
+        if (currentUserId != null) {
+            userRepository.updateUserOnlineStatus(currentUserId, false);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Si el menú FAB está abierto, cerrarlo en lugar de salir
+        if (fabMenuHelper != null && fabMenuHelper.isMenuOpen()) {
+            fabMenuHelper.closeMenu();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Detener listeners para evitar memory leaks
+        if (chatRepository != null) {
+            chatRepository.stopListening();
+        }
+        if (userRepository != null) {
+            userRepository.stopListening();
+        }
+        // Forzar cierre del menú FAB
+        if (fabMenuHelper != null) {
+            fabMenuHelper.forceCloseMenu();
+        }
     }
 
     /**
