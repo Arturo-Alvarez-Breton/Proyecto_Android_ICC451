@@ -217,6 +217,13 @@ public class AddUserActivity extends AppCompatActivity {
     private void createChatWithUser(User user) {
         showLoading(true);
 
+        // Validate that the selected user has a valid name
+        if (user.getName() == null || user.getName().trim().isEmpty()) {
+            showLoading(false);
+            Toast.makeText(this, "El usuario seleccionado no tiene nombre válido.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         List<String> participantIds = Arrays.asList(currentUserId, user.getId());
         List<String> participantNames = Arrays.asList(currentUserName, user.getName());
 
