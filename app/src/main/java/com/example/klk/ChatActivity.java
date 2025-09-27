@@ -1,6 +1,7 @@
 package com.example.klk;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -51,6 +54,7 @@ public class ChatActivity extends AppCompatActivity {
     public static final String EXTRA_CHAT_ID = "chat_id";
     public static final String EXTRA_CHAT_NAME = "chat_name";
     private static final int REQUEST_IMAGE_PICK = 1001;
+    private static final int REQUEST_PERMISSION_READ_IMAGES = 2001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,12 +235,41 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     /**
-     * Maneja la funcionalidad de adjuntar imagen
+     * Maneja la funcionalidad de adjuntar imagen con permisos
      */
     private void attachImage() {
+        String permission;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            permission = android.Manifest.permission.READ_MEDIA_IMAGES;
+        } else {
+            permission = android.Manifest.permission.READ_EXTERNAL_STORAGE;
+        }
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{permission}, REQUEST_PERMISSION_READ_IMAGES);
+        } else {
+            openGallery();
+        }
+    }
+
+    /**
+     * Abre la galería para seleccionar una imagen
+     */
+    private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_IMAGE_PICK);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION_READ_IMAGES) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                Toast.makeText(this, "Permiso denegado para acceder a la galería", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**
