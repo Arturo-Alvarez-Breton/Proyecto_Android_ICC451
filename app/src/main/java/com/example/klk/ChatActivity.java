@@ -1,5 +1,6 @@
 package com.example.klk;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,6 +50,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public static final String EXTRA_CHAT_ID = "chat_id";
     public static final String EXTRA_CHAT_NAME = "chat_name";
+    private static final int REQUEST_IMAGE_PICK = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,10 +232,11 @@ public class ChatActivity extends AppCompatActivity {
 
     /**
      * Maneja la funcionalidad de adjuntar imagen
-     * TODO: Implementar selección y subida de imágenes
      */
     private void attachImage() {
-        Toast.makeText(this, "Funcionalidad de imágenes próximamente", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_IMAGE_PICK);
     }
 
     /**
@@ -275,6 +278,19 @@ public class ChatActivity extends AppCompatActivity {
         // Detener el listener al salir de la actividad
         if (messageRepository != null) {
             messageRepository.stopListening();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK && data != null) {
+            // Aquí obtienes la URI de la imagen seleccionada
+            android.net.Uri imageUri = data.getData();
+            if (imageUri != null) {
+                Toast.makeText(this, "Imagen seleccionada: " + imageUri.toString(), Toast.LENGTH_SHORT).show();
+                // Aquí puedes continuar con la subida a Firebase en el siguiente paso
+            }
         }
     }
 }
