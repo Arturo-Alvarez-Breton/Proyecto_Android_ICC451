@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.example.klk.models.Message;
 import com.example.klk.models.MessageType;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -12,7 +14,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,7 +24,6 @@ import java.util.List;
 public class MessageRepository {
     private static final String MESSAGES_COLLECTION = "messages";
 
-    private final FirebaseFirestore firestore;
     private final CollectionReference messagesRef;
     private ListenerRegistration messagesListener;
 
@@ -31,7 +31,7 @@ public class MessageRepository {
     private static MessageRepository instance;
 
     private MessageRepository() {
-        firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         messagesRef = firestore.collection(MESSAGES_COLLECTION);
     }
 
@@ -52,6 +52,24 @@ public class MessageRepository {
      */
     public void sendTextMessage(String chatId, String senderId, String senderName,
                                String content, MessageCallback callback) {
+
+        // Verificar autenticación antes de enviar mensaje
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            if (callback != null) {
+                callback.onError("Usuario no autenticado. Por favor, inicia sesión.");
+            }
+            return;
+        }
+
+        // Verificar que el senderId coincida con el usuario autenticado
+        if (!currentUser.getUid().equals(senderId)) {
+            if (callback != null) {
+                callback.onError("Error de autenticación: ID de usuario no válido.");
+            }
+            return;
+        }
+
         Message message = new Message(chatId, senderId, senderName, content, MessageType.TEXT);
         sendMessage(message, callback);
     }
@@ -72,8 +90,6 @@ public class MessageRepository {
     }
 
     /**
-     * Método privado para enviar cualquier tipo de mensaje
-    /**
      * Sube una imagen a Firebase Storage y envía el mensaje
      * @param chatId ID del chat
      * @param senderId ID del usuario que envía
@@ -83,6 +99,24 @@ public class MessageRepository {
      */
     public void sendImageMessage(String chatId, String senderId, String senderName,
                                 android.net.Uri imageUri, MessageCallback callback) {
+
+        // Verificar autenticación antes de subir imagen
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            if (callback != null) {
+                callback.onError("Usuario no autenticado. Por favor, inicia sesión.");
+            }
+            return;
+        }
+
+        // Verificar que el senderId coincida con el usuario autenticado
+        if (!currentUser.getUid().equals(senderId)) {
+            if (callback != null) {
+                callback.onError("Error de autenticación: ID de usuario no válido.");
+            }
+            return;
+        }
+
         // Referencia a Firebase Storage
         StorageReference storageRef = FirebaseStorage.getInstance().getReference("chat_images");
         String fileName = System.currentTimeMillis() + "_" + senderId + ".jpg";
@@ -112,7 +146,9 @@ public class MessageRepository {
             });
     }
 
-
+    /**
+     * Método privado para enviar cualquier tipo de mensaje
+     */
     private void sendMessage(Message message, MessageCallback callback) {
         messagesRef.add(message)
             .addOnSuccessListener(documentReference -> {
@@ -179,7 +215,7 @@ public class MessageRepository {
                     messages.add(message);
                 });
                 // Ordenar por timestamp ASC para mostrar cronológicamente
-                Collections.sort(messages, Comparator.comparingLong(Message::getTimestamp));
+                messages.sort(Comparator.comparingLong(Message::getTimestamp));
                 messagesLiveData.setValue(messages);
             }
         });

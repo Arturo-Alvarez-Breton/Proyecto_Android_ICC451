@@ -27,6 +27,8 @@ import com.example.klk.adapters.MessageAdapter;
 import com.example.klk.models.Message;
 import com.example.klk.repositories.MessageRepository;
 import com.example.klk.utils.SessionManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import java.util.List;
 
 /**
@@ -72,12 +74,49 @@ public class ChatActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_chat);
 
+        // Verificar autenticación antes de inicializar la actividad
+        if (!validateUserAuthentication()) {
+            return; // La actividad se cerrará si no está autenticado
+        }
+
         initializeComponents();
         getChatDataFromIntent();
         setupRecyclerView();
         setupWindowInsets();
         setupEventListeners();
         loadMessages();
+    }
+
+    /**
+     * Valida que el usuario esté autenticado antes de acceder al chat
+     */
+    private boolean validateUserAuthentication() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "Usuario no autenticado. Redirigiendo al login...", Toast.LENGTH_LONG).show();
+            // Redirigir al login
+            Intent intent = new Intent(this, Login.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return false;
+        }
+
+        // Verificar que el usuario de la sesión coincida con Firebase Auth
+        SessionManager sessionManager = new SessionManager(this);
+        String sessionUserId = sessionManager.getUserId();
+        if (sessionUserId == null || !sessionUserId.equals(currentUser.getUid())) {
+            Toast.makeText(this, "Sesión inválida. Redirigiendo al login...", Toast.LENGTH_LONG).show();
+            // Limpiar sesión y redirigir al login
+            sessionManager.clearSession();
+            Intent intent = new Intent(this, Login.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return false;
+        }
+
+        return true;
     }
 
     /**

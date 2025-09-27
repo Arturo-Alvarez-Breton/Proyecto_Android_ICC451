@@ -25,6 +25,8 @@ import com.example.klk.repositories.UserRepository;
 import com.example.klk.utils.SessionManager;
 import com.example.klk.utils.FabMenuHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        // Verificar autenticación antes de inicializar la actividad
+        if (!validateUserAuthentication()) {
+            return; // La actividad se cerrará si no está autenticado
+        }
+
         initializeComponents();
         checkUserSession();
         setupRecyclerView();
@@ -67,6 +74,29 @@ public class MainActivity extends AppCompatActivity {
         setupEventListeners();
         registerCurrentUser();
         loadChats();
+    }
+
+    /**
+     * Valida que el usuario esté autenticado antes de acceder a la app
+     */
+    private boolean validateUserAuthentication() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            navigateToLogin();
+            return false;
+        }
+
+        // Verificar que el usuario de la sesión coincida con Firebase Auth
+        SessionManager tempSessionManager = new SessionManager(this);
+        String sessionUserId = tempSessionManager.getUserId();
+        if (sessionUserId == null || !sessionUserId.equals(currentUser.getUid())) {
+            // Limpiar sesión y redirigir al login
+            tempSessionManager.clearSession();
+            navigateToLogin();
+            return false;
+        }
+
+        return true;
     }
 
     /**
