@@ -2,12 +2,15 @@ package com.example.klk;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -41,6 +44,12 @@ public class ChatActivity extends AppCompatActivity {
     private ImageButton buttonBack;
 
     // Business Logic
+
+    // Image preview components
+    private View imagePreviewContainer;
+    private ImageView imagePreview;
+    private Button buttonSendImage;
+    private Button buttonCancelImage;
     private MessageAdapter messageAdapter;
     private MessageRepository messageRepository;
     private SessionManager sessionManager;
@@ -52,6 +61,7 @@ public class ChatActivity extends AppCompatActivity {
     private String currentUserName;
 
     public static final String EXTRA_CHAT_ID = "chat_id";
+    private Uri selectedImageUri;
     public static final String EXTRA_CHAT_NAME = "chat_name";
     private static final int REQUEST_IMAGE_PICK = 1001;
     private static final int REQUEST_PERMISSION_READ_IMAGES = 2001;
@@ -84,6 +94,12 @@ public class ChatActivity extends AppCompatActivity {
         buttonBack = findViewById(R.id.buttonBack);
 
         // Business Logic Components
+
+        // Image preview components
+        imagePreviewContainer = findViewById(R.id.imagePreviewContainer);
+        imagePreview = findViewById(R.id.imagePreview);
+        buttonSendImage = findViewById(R.id.buttonSendImage);
+        buttonCancelImage = findViewById(R.id.buttonCancelImage);
         messageRepository = MessageRepository.getInstance();
         sessionManager = new SessionManager(this);
 
@@ -142,6 +158,8 @@ public class ChatActivity extends AppCompatActivity {
         setupMessageInputListener();
         setupBackButtonListener();
         setupAttachImageListener();
+        setupSendImageButtonListener();
+        setupCancelImageButtonListener();
     }
 
     /**
@@ -153,7 +171,21 @@ public class ChatActivity extends AppCompatActivity {
 
     /**
      * Configura el listener del campo de texto para habilitar/deshabilitar el botón de envío
+    /**
+     * Configura el listener del botón de enviar imagen
      */
+    private void setupSendImageButtonListener() {
+        buttonSendImage.setOnClickListener(v -> sendImageMessage());
+    }
+
+    /**
+     * Configura el listener del botón de cancelar imagen
+     */
+    private void setupCancelImageButtonListener() {
+        buttonCancelImage.setOnClickListener(v -> cancelImageSelection());
+    }
+
+
     private void setupMessageInputListener() {
         editTextMessage.addTextChangedListener(new TextWatcher() {
             @Override
@@ -236,7 +268,56 @@ public class ChatActivity extends AppCompatActivity {
 
     /**
      * Maneja la funcionalidad de adjuntar imagen con permisos
+    /**
+     * Envía un mensaje de imagen
      */
+    private void sendImageMessage() {
+        if (selectedImageUri == null) {
+            Toast.makeText(this, "No hay imagen seleccionada", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Deshabilitar temporalmente el botón para evitar envíos múltiples
+        buttonSendImage.setEnabled(false);
+
+        messageRepository.sendImageMessage(
+            chatId,
+            currentUserId,
+            currentUserName,
+            selectedImageUri,
+            new MessageRepository.MessageCallback() {
+                @Override
+                public void onSuccess(Message message) {
+                    runOnUiThread(() -> {
+                        imagePreviewContainer.setVisibility(View.GONE);
+                        selectedImageUri = null;
+                        buttonSendImage.setEnabled(true);
+                        scrollToBottom();
+                    });
+                }
+
+                @Override
+                public void onError(String error) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(ChatActivity.this,
+                            "Error al enviar imagen: " + error,
+                            Toast.LENGTH_SHORT).show();
+                        buttonSendImage.setEnabled(true);
+                    });
+                }
+            }
+        );
+    }
+
+    /**
+     * Cancela la selección de imagen
+     */
+    private void cancelImageSelection() {
+        selectedImageUri = null;
+        imagePreviewContainer.setVisibility(View.GONE);
+    }
+
+
     private void attachImage() {
         String permission;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
@@ -321,8 +402,11 @@ public class ChatActivity extends AppCompatActivity {
             // Aquí obtienes la URI de la imagen seleccionada
             android.net.Uri imageUri = data.getData();
             if (imageUri != null) {
-                Toast.makeText(this, "Imagen seleccionada: " + imageUri.toString(), Toast.LENGTH_SHORT).show();
+            imageUri = data.getData();
                 // Aquí puedes continuar con la subida a Firebase en el siguiente paso
+                selectedImageUri = imageUri;
+                imagePreview.setImageURI(selectedImageUri);
+                imagePreviewContainer.setVisibility(View.VISIBLE);
             }
         }
     }

@@ -8,6 +8,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -70,7 +73,46 @@ public class MessageRepository {
 
     /**
      * Método privado para enviar cualquier tipo de mensaje
+    /**
+     * Sube una imagen a Firebase Storage y envía el mensaje
+     * @param chatId ID del chat
+     * @param senderId ID del usuario que envía
+     * @param senderName Nombre del usuario que envía
+     * @param imageUri URI local de la imagen
+     * @param callback Callback para el resultado de la operación
      */
+    public void sendImageMessage(String chatId, String senderId, String senderName,
+                                android.net.Uri imageUri, MessageCallback callback) {
+        // Referencia a Firebase Storage
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference("chat_images");
+        String fileName = System.currentTimeMillis() + "_" + senderId + ".jpg";
+        StorageReference imageRef = storageRef.child(fileName);
+
+        // Subir imagen
+        imageRef.putFile(imageUri)
+            .addOnSuccessListener(taskSnapshot -> {
+                // Obtener URL de descarga
+                imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String imageUrl = uri.toString();
+                    // Crear y enviar mensaje con la URL de la imagen
+                    Message message = new Message(chatId, senderId, senderName, "", MessageType.IMAGE);
+                    message.setImageUrl(imageUrl);
+                    sendMessage(message, callback);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) {
+                        callback.onError("Error al obtener URL de imagen: " + e.getMessage());
+                    }
+                });
+            })
+            .addOnFailureListener(e -> {
+                if (callback != null) {
+                    callback.onError("Error al subir imagen: " + e.getMessage());
+                }
+            });
+    }
+
+
     private void sendMessage(Message message, MessageCallback callback) {
         messagesRef.add(message)
             .addOnSuccessListener(documentReference -> {

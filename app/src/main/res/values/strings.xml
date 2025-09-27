@@ -37,6 +37,9 @@
     <string name="btn_attach_image">Adjuntar imagen</string>
     <string name="hint_type_message">Escribe un mensaje...</string>
     <string name="desc_message_image">Imagen del mensaje</string>
+    <string name="desc_image_preview">Vista previa de imagen</string>
+    <string name="btn_send_image">Enviar imagen</string>
+    <string name="btn_cancel">Cancelar</string>
 
     <!-- Chat activity strings -->
     <string name="error_invalid_chat_data">Error: Datos del chat no válidos</string>
