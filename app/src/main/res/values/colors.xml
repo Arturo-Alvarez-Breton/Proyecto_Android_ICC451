@@ -20,6 +20,7 @@
     <color name="btn_menu">#FFFFFF</color>
     <color name="btn_chats_filters_inactive">#80EEEEEE</color>
     <color name="btn_chats_filters_active">#803A6080</color>
+    <color name="btn_cancel_img">#80000000</color>
 
     <color name="text_on_btn_login">#FFFFFF</color>
     <color name="text_on_btn_register">#FFFFFF</color>

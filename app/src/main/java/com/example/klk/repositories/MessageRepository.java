@@ -147,6 +147,66 @@ public class MessageRepository {
     }
 
     /**
+     * Envía un mensaje combinando texto e imagen
+     * @param chatId ID del chat
+     * @param senderId ID del usuario que envía
+     * @param senderName Nombre del usuario que envía
+     * @param imageUri URI local de la imagen
+     * @param text Texto del mensaje
+     * @param callback Callback para el resultado de la operación
+     */
+    public void sendImageWithText(String chatId, String senderId, String senderName,
+                                 android.net.Uri imageUri, String text, MessageCallback callback) {
+        // Verificar autenticación primero
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            if (callback != null) {
+                callback.onError("Usuario no autenticado. Por favor, inicia sesión.");
+            }
+            return;
+        }
+
+        // Verificar ID de usuario
+        if (!currentUser.getUid().equals(senderId)) {
+            if (callback != null) {
+                callback.onError("Error de autenticación: ID de usuario no válido.");
+            }
+            return;
+        }
+
+        // Referencia a Firebase Storage
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference("chat_images");
+        String fileName = System.currentTimeMillis() + "_" + senderId + ".jpg";
+        StorageReference imageRef = storageRef.child(fileName);
+
+        // Subir imagen primero
+        imageRef.putFile(imageUri)
+            .addOnSuccessListener(taskSnapshot -> {
+                // Obtener URL de descarga
+                imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String imageUrl = uri.toString();
+                    
+                    // Crear mensaje con texto e imagen
+                    Message message = new Message(chatId, senderId, senderName, text, MessageType.MIXED);
+                    message.setImageUrl(imageUrl);
+                    
+                    // Enviar el mensaje combinado
+                    sendMessage(message, callback);
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) {
+                        callback.onError("Error al obtener URL de imagen: " + e.getMessage());
+                    }
+                });
+            })
+            .addOnFailureListener(e -> {
+                if (callback != null) {
+                    callback.onError("Error al subir imagen: " + e.getMessage());
+                }
+            });
+    }
+
+    /**
      * Método privado para enviar cualquier tipo de mensaje
      */
     private void sendMessage(Message message, MessageCallback callback) {

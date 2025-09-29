@@ -31,38 +31,21 @@
             android:contentDescription="@string/desc_image_preview"
             android:src="@drawable/image_placeholder"
             tools:src="@tools:sample/backgrounds/scenic" />
+        <Button
+                android:id="@+id/buttonCancelImage"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/btn_cancel"
+                android:textColor="@color/btn_cancel_img"
+                android:elevation="0dp"
+        />
 
     </androidx.cardview.widget.CardView>
+    <!-- Botón cancelar -->
 
-    <!-- Botones de acción -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imagePreviewCard">
-
-        <!-- Botón cancelar -->
-        <Button
-            android:id="@+id/buttonCancelImage"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="@string/btn_cancel"
-            android:textColor="@color/input_field_hint" />
-
-        <!-- Botón enviar -->
-        <Button
-            android:id="@+id/buttonSendImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/btn_login"
-            android:text="@string/btn_send_image"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

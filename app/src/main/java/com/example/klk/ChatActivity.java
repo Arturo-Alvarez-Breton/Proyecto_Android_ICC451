@@ -45,8 +45,6 @@ public class ChatActivity extends AppCompatActivity {
     private ImageButton buttonAttachImage;
     private ImageButton buttonBack;
 
-    // Business Logic
-
     // Image preview components
     private View imagePreviewContainer;
     private ImageView imagePreview;
@@ -94,7 +92,6 @@ public class ChatActivity extends AppCompatActivity {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             Toast.makeText(this, "Usuario no autenticado. Redirigiendo al login...", Toast.LENGTH_LONG).show();
-            // Redirigir al login
             Intent intent = new Intent(this, Login.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -107,7 +104,6 @@ public class ChatActivity extends AppCompatActivity {
         String sessionUserId = sessionManager.getUserId();
         if (sessionUserId == null || !sessionUserId.equals(currentUser.getUid())) {
             Toast.makeText(this, "Sesión inválida. Redirigiendo al login...", Toast.LENGTH_LONG).show();
-            // Limpiar sesión y redirigir al login
             sessionManager.clearSession();
             Intent intent = new Intent(this, Login.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -121,7 +117,6 @@ public class ChatActivity extends AppCompatActivity {
 
     /**
      * Inicializa todos los componentes necesarios
-     * Principio de Single Responsibility
      */
     private void initializeComponents() {
         // UI Components
@@ -132,12 +127,10 @@ public class ChatActivity extends AppCompatActivity {
         buttonAttachImage = findViewById(R.id.buttonAttachImage);
         buttonBack = findViewById(R.id.buttonBack);
 
-        // Business Logic Components
-
         // Image preview components
         imagePreviewContainer = findViewById(R.id.imagePreviewContainer);
         imagePreview = findViewById(R.id.imagePreview);
-        buttonSendImage = findViewById(R.id.buttonSendImage);
+//        buttonSendImage = findViewById(R.id.buttonSendImage);
         buttonCancelImage = findViewById(R.id.buttonCancelImage);
         messageRepository = MessageRepository.getInstance();
         sessionManager = new SessionManager(this);
@@ -170,7 +163,7 @@ public class ChatActivity extends AppCompatActivity {
         messageAdapter = new MessageAdapter(this, currentUserId);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true); // Mostrar mensajes más recientes al final
+        layoutManager.setStackFromEnd(true);
 
         recyclerViewMessages.setLayoutManager(layoutManager);
         recyclerViewMessages.setAdapter(messageAdapter);
@@ -197,24 +190,14 @@ public class ChatActivity extends AppCompatActivity {
         setupMessageInputListener();
         setupBackButtonListener();
         setupAttachImageListener();
-        setupSendImageButtonListener();
         setupCancelImageButtonListener();
     }
 
     /**
-     * Configura el listener del botón de enviar
+     * Configura el listener del botón de enviar - maneja texto, imagen o ambos
      */
     private void setupSendButtonListener() {
-        buttonSendMessage.setOnClickListener(v -> sendTextMessage());
-    }
-
-    /**
-     * Configura el listener del campo de texto para habilitar/deshabilitar el botón de envío
-    /**
-     * Configura el listener del botón de enviar imagen
-     */
-    private void setupSendImageButtonListener() {
-        buttonSendImage.setOnClickListener(v -> sendImageMessage());
+        buttonSendMessage.setOnClickListener(v -> sendMessage());
     }
 
     /**
@@ -224,7 +207,6 @@ public class ChatActivity extends AppCompatActivity {
         buttonCancelImage.setOnClickListener(v -> cancelImageSelection());
     }
 
-
     private void setupMessageInputListener() {
         editTextMessage.addTextChangedListener(new TextWatcher() {
             @Override
@@ -232,7 +214,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateSendButtonState(s.toString().trim());
+                updateSendButtonState();
             }
 
             @Override
@@ -255,28 +237,53 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     /**
-     * Actualiza el estado del botón de envío basado en el contenido del mensaje
-     * Principio DRY
+     * Actualiza el estado del botón de envío basado en el contenido del mensaje y/o imagen
+     * Un mensaje puede enviarse si tiene texto O imagen (o ambos)
      */
-    private void updateSendButtonState(String messageText) {
+    private void updateSendButtonState() {
+        String messageText = editTextMessage.getText().toString().trim();
         boolean hasText = !messageText.isEmpty();
-        buttonSendMessage.setEnabled(hasText);
-        buttonSendMessage.setAlpha(hasText ? 1.0f : 0.5f);
+        boolean hasImage = selectedImageUri != null;
+
+        // Habilitar botón si hay texto O imagen
+        boolean canSend = hasText || hasImage;
+        buttonSendMessage.setEnabled(canSend);
+        buttonSendMessage.setAlpha(canSend ? 1.0f : 0.5f);
     }
 
     /**
-     * Envía un mensaje de texto
+     * Envía un mensaje - determina automáticamente el tipo basado en el contenido
      */
-    private void sendTextMessage() {
+    private void sendMessage() {
         String messageText = editTextMessage.getText().toString().trim();
+        boolean hasText = !messageText.isEmpty();
+        boolean hasImage = selectedImageUri != null;
 
-        if (messageText.isEmpty()) {
+        // Validar que hay contenido para enviar
+        if (!hasText && !hasImage) {
             return;
         }
 
         // Deshabilitar temporalmente el botón para evitar envíos múltiples
         buttonSendMessage.setEnabled(false);
 
+        // Determinar tipo de mensaje y enviar
+        if (hasImage && hasText) {
+            // Mensaje combinado: texto + imagen
+            sendImageWithTextMessage(messageText);
+        } else if (hasImage) {
+            // Solo imagen
+            sendImageOnlyMessage();
+        } else {
+            // Solo texto
+            sendTextOnlyMessage(messageText);
+        }
+    }
+
+    /**
+     * Envía un mensaje de solo texto
+     */
+    private void sendTextOnlyMessage(String messageText) {
         messageRepository.sendTextMessage(
             chatId,
             currentUserId,
@@ -286,8 +293,8 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Message message) {
                     runOnUiThread(() -> {
-                        editTextMessage.setText("");
-                        buttonSendMessage.setEnabled(true);
+                        clearInput();
+                        updateSendButtonState();
                         scrollToBottom();
                     });
                 }
@@ -298,7 +305,7 @@ public class ChatActivity extends AppCompatActivity {
                         Toast.makeText(ChatActivity.this,
                             "Error al enviar mensaje: " + error,
                             Toast.LENGTH_SHORT).show();
-                        buttonSendMessage.setEnabled(true);
+                        updateSendButtonState();
                     });
                 }
             }
@@ -306,19 +313,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     /**
-     * Maneja la funcionalidad de adjuntar imagen con permisos
-    /**
-     * Envía un mensaje de imagen
+     * Envía un mensaje de solo imagen
      */
-    private void sendImageMessage() {
-        if (selectedImageUri == null) {
-            Toast.makeText(this, "No hay imagen seleccionada", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Deshabilitar temporalmente el botón para evitar envíos múltiples
-        buttonSendImage.setEnabled(false);
-
+    private void sendImageOnlyMessage() {
         messageRepository.sendImageMessage(
             chatId,
             currentUserId,
@@ -328,9 +325,8 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Message message) {
                     runOnUiThread(() -> {
-                        imagePreviewContainer.setVisibility(View.GONE);
-                        selectedImageUri = null;
-                        buttonSendImage.setEnabled(true);
+                        clearInput();
+                        updateSendButtonState();
                         scrollToBottom();
                     });
                 }
@@ -341,11 +337,52 @@ public class ChatActivity extends AppCompatActivity {
                         Toast.makeText(ChatActivity.this,
                             "Error al enviar imagen: " + error,
                             Toast.LENGTH_SHORT).show();
-                        buttonSendImage.setEnabled(true);
+                        updateSendButtonState();
                     });
                 }
             }
         );
+    }
+
+    /**
+     * Envía un mensaje combinado de texto e imagen
+     */
+    private void sendImageWithTextMessage(String messageText) {
+        messageRepository.sendImageWithText(
+            chatId,
+            currentUserId,
+            currentUserName,
+            selectedImageUri,
+            messageText,
+            new MessageRepository.MessageCallback() {
+                @Override
+                public void onSuccess(Message message) {
+                    runOnUiThread(() -> {
+                        clearInput();
+                        updateSendButtonState();
+                        scrollToBottom();
+                    });
+                }
+
+                @Override
+                public void onError(String error) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(ChatActivity.this,
+                            "Error al enviar mensaje: " + error,
+                            Toast.LENGTH_SHORT).show();
+                        updateSendButtonState();
+                    });
+                }
+            }
+        );
+    }
+
+    /**
+     * Limpia el input de texto e imagen
+     */
+    private void clearInput() {
+        editTextMessage.setText("");
+        cancelImageSelection();
     }
 
     /**
@@ -356,7 +393,9 @@ public class ChatActivity extends AppCompatActivity {
         imagePreviewContainer.setVisibility(View.GONE);
     }
 
-
+    /**
+     * Maneja la funcionalidad de adjuntar imagen con permisos
+     */
     private void attachImage() {
         String permission;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
@@ -419,7 +458,6 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Detener el listener de Firebase para evitar memory leaks
         if (messageRepository != null) {
             messageRepository.stopListening();
         }
@@ -428,7 +466,6 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        // Detener el listener al salir de la actividad
         if (messageRepository != null) {
             messageRepository.stopListening();
         }
@@ -438,14 +475,12 @@ public class ChatActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK && data != null) {
-            // Aquí obtienes la URI de la imagen seleccionada
             android.net.Uri imageUri = data.getData();
             if (imageUri != null) {
-            imageUri = data.getData();
-                // Aquí puedes continuar con la subida a Firebase en el siguiente paso
                 selectedImageUri = imageUri;
                 imagePreview.setImageURI(selectedImageUri);
                 imagePreviewContainer.setVisibility(View.VISIBLE);
+                updateSendButtonState(); // Actualizar estado del botón cuando se selecciona imagen
             }
         }
     }

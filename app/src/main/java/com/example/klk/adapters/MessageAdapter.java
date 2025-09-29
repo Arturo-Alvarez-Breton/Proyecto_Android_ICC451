@@ -28,6 +28,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_TEXT_RECEIVED = 2;
     private static final int VIEW_TYPE_IMAGE_SENT = 3;
     private static final int VIEW_TYPE_IMAGE_RECEIVED = 4;
+    private static final int VIEW_TYPE_MIXED_SENT = 5;
+    private static final int VIEW_TYPE_MIXED_RECEIVED = 6;
 
     private final Context context;
     private final List<Message> messages;
@@ -46,10 +48,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Message message = messages.get(position);
         boolean isSent = message.getSenderId().equals(currentUserId);
 
-        if (message.getMessageType() == MessageType.TEXT) {
-            return isSent ? VIEW_TYPE_TEXT_SENT : VIEW_TYPE_TEXT_RECEIVED;
-        } else {
-            return isSent ? VIEW_TYPE_IMAGE_SENT : VIEW_TYPE_IMAGE_RECEIVED;
+        switch (message.getMessageType()) {
+            case TEXT:
+                return isSent ? VIEW_TYPE_TEXT_SENT : VIEW_TYPE_TEXT_RECEIVED;
+            case IMAGE:
+                return isSent ? VIEW_TYPE_IMAGE_SENT : VIEW_TYPE_IMAGE_RECEIVED;
+            case MIXED:
+                return isSent ? VIEW_TYPE_MIXED_SENT : VIEW_TYPE_MIXED_RECEIVED;
+            default:
+                return isSent ? VIEW_TYPE_TEXT_SENT : VIEW_TYPE_TEXT_RECEIVED;
         }
     }
 
@@ -71,6 +78,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case VIEW_TYPE_IMAGE_RECEIVED:
                 return new ImageMessageReceivedViewHolder(
                     inflater.inflate(R.layout.item_message_image_received, parent, false));
+            case VIEW_TYPE_MIXED_SENT:
+                return new MixedMessageSentViewHolder(
+                    inflater.inflate(R.layout.item_message_mixed_sent, parent, false));
+            case VIEW_TYPE_MIXED_RECEIVED:
+                return new MixedMessageReceivedViewHolder(
+                    inflater.inflate(R.layout.item_message_mixed_received, parent, false));
             default:
                 throw new IllegalArgumentException("Invalid view type: " + viewType);
         }
@@ -88,6 +101,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((ImageMessageSentViewHolder) holder).bind(message);
         } else if (holder instanceof ImageMessageReceivedViewHolder) {
             ((ImageMessageReceivedViewHolder) holder).bind(message);
+        } else if (holder instanceof MixedMessageSentViewHolder) {
+            ((MixedMessageSentViewHolder) holder).bind(message);
+        } else if (holder instanceof MixedMessageReceivedViewHolder) {
+            ((MixedMessageReceivedViewHolder) holder).bind(message);
         }
     }
 
@@ -204,6 +221,65 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         public void bind(Message message) {
+            textSenderName.setText(message.getSenderName());
+            textTime.setText(formatTime(message.getTimestamp()));
+
+            // Cargar imagen usando Glide
+            Glide.with(context)
+                .load(message.getImageUrl())
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_error)
+                .into(imageMessage);
+        }
+    }
+
+    /**
+     * ViewHolder para mensajes mixtos enviados
+     */
+    class MixedMessageSentViewHolder extends RecyclerView.ViewHolder {
+        private final TextView textContent;
+        private final TextView textTime;
+        private final ImageView imageMessage;
+
+        public MixedMessageSentViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textContent = itemView.findViewById(R.id.textMessageContent);
+            textTime = itemView.findViewById(R.id.textMessageTime);
+            imageMessage = itemView.findViewById(R.id.imageMessage);
+        }
+
+        public void bind(Message message) {
+            textContent.setText(message.getContent());
+            textTime.setText(formatTime(message.getTimestamp()));
+
+            // Cargar imagen usando Glide
+            Glide.with(context)
+                .load(message.getImageUrl())
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_error)
+                .into(imageMessage);
+        }
+    }
+
+    /**
+     * ViewHolder para mensajes mixtos recibidos
+     */
+    class MixedMessageReceivedViewHolder extends RecyclerView.ViewHolder {
+        private final TextView textContent;
+        private final TextView textSenderName;
+        private final TextView textTime;
+        private final ImageView imageMessage;
+
+        public MixedMessageReceivedViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textContent = itemView.findViewById(R.id.textMessageContent);
+            textSenderName = itemView.findViewById(R.id.textSenderName);
+            textTime = itemView.findViewById(R.id.textMessageTime);
+            imageMessage = itemView.findViewById(R.id.imageMessage);
+        }
+
+        public void bind(Message message) {
+            textContent.setText(message.getContent());
             textSenderName.setText(message.getSenderName());
             textTime.setText(formatTime(message.getTimestamp()));
 
