@@ -7,6 +7,7 @@ public class User {
     private String email;
     private String name;
     private String profileImageUrl;
+    private String fcmToken;
     private boolean isOnline;
     private long lastSeen;
 
@@ -90,5 +91,15 @@ public class User {
     @PropertyName("lastSeen")
     public void setLastSeen(long lastSeen) {
         this.lastSeen = lastSeen;
+    }
+
+    @PropertyName("fcmToken")
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    @PropertyName("fcmToken")
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }
