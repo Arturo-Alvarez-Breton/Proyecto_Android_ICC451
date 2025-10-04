@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 String token = task.getResult();
                 Log.i("FCM Token", token);
-                // TODO: Update current User FCMToken
+                // Actualizar el FCMToken del usuario actual
                 FirebaseFirestore.getInstance().collection("users")
                     .document(currentUserId)
                     .update("fcmToken", token)
