@@ -63,4 +63,16 @@
     <string name="title_create_group">Crear Grupo</string>
     <string name="coming_soon_create_group">Funcionalidad de grupos próximamente</string>
 
+    <!-- Notificaciones Push (FCM) -->
+    <string name="default_notification_channel_id">klk_messages_channel</string>
+    <string name="notification_channel_name">Mensajes de KlK</string>
+    <string name="notification_channel_description">Notificaciones de mensajes nuevos en tus chats</string>
+    <string name="notification_new_message_title">Nuevo mensaje de %1$s</string>
+    <string name="notification_new_message_default_title">Nuevo mensaje</string>
+    <string name="notification_new_image_message">📷 Imagen</string>
+    <string name="notification_permission_rationale_title">Activa las notificaciones</string>
+    <string name="notification_permission_rationale_message">Para recibir mensajes en tiempo real, necesitamos tu permiso para mostrar notificaciones.</string>
+    <string name="notification_permission_ok">Activar</string>
+    <string name="notification_permission_no_thanks">Ahora no</string>
+
 </resources>

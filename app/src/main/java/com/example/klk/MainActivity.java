@@ -26,6 +26,7 @@ import com.example.klk.repositories.ChatRepository;
 import com.example.klk.repositories.UserRepository;
 import com.example.klk.utils.SessionManager;
 import com.example.klk.utils.FabMenuHelper;
+import com.example.klk.utils.NotificationPermissionHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -62,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     private String currentUserId;
     private String currentUserName;
 
+    // Notification Permission Helper
+    private NotificationPermissionHelper notificationPermissionHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +86,31 @@ public class MainActivity extends AppCompatActivity {
         registerCurrentUser();
         loadChats();
         getFCMToken();
+        requestNotificationPermission();
+    }
+
+    /**
+     * Solicita permiso para mostrar notificaciones (Android 13+)
+     * Aplica buenas prácticas de UX: se solicita al inicio de la app
+     */
+    private void requestNotificationPermission() {
+        notificationPermissionHelper = new NotificationPermissionHelper(this);
+
+        notificationPermissionHelper.requestNotificationPermission(
+            new NotificationPermissionHelper.PermissionCallback() {
+                @Override
+                public void onPermissionGranted() {
+                    Log.d("MainActivity", "Permiso de notificaciones concedido");
+                    // El usuario puede recibir notificaciones
+                }
+
+                @Override
+                public void onPermissionDenied() {
+                    Log.d("MainActivity", "Permiso de notificaciones denegado");
+                    // La app funciona pero sin notificaciones
+                }
+            }
+        );
     }
 
     private void getFCMToken() {
