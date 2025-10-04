@@ -80,6 +80,13 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <!-- Image Viewer Activity - Pantalla para ver imágenes en pantalla completa -->
+        <activity
+                android:name=".ImageViewerActivity"
+                android:exported="false"
+                android:theme="@style/Theme.Klk.Fullscreen"
+                android:screenOrientation="portrait" />
+
         <!-- Servicio de Firebase Cloud Messaging -->
         <service
             android:name=".services.FCMNotificationService"

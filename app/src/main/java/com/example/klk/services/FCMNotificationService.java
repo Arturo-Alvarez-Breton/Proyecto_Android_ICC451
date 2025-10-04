@@ -31,7 +31,9 @@ public class FCMNotificationService extends FirebaseMessagingService {
     private static final String KEY_SENDER_NAME = "senderName";
     private static final String KEY_MESSAGE_CONTENT = "messageContent";
     private static final String KEY_MESSAGE_TYPE = "messageType";
+    private static final String KEY_IMAGE_URL = "imageUrl";
     private static final String MESSAGE_TYPE_IMAGE = "IMAGE";
+    private static final String MESSAGE_TYPE_MIXED = "MIXED";
 
     /**
      * Se llama cuando se recibe un nuevo mensaje FCM
@@ -69,6 +71,7 @@ public class FCMNotificationService extends FirebaseMessagingService {
         String senderName = data.get(KEY_SENDER_NAME);
         String messageContent = data.get(KEY_MESSAGE_CONTENT);
         String messageType = data.get(KEY_MESSAGE_TYPE);
+        String imageUrl = data.get(KEY_IMAGE_URL);
 
         // Validar datos requeridos
         if (chatId == null || senderName == null) {
@@ -90,26 +93,29 @@ public class FCMNotificationService extends FirebaseMessagingService {
         }
 
         // Mostrar la notificación
-        showNotification(chatId, chatName, senderName, messageContent, messageType);
+        showNotification(chatId, chatName, senderName, messageContent, messageType, imageUrl);
     }
 
     /**
      * Muestra la notificación usando el NotificationHelper
      */
     private void showNotification(String chatId, String chatName, String senderName,
-                                  String messageContent, String messageType) {
+                                  String messageContent, String messageType, String imageUrl) {
         // Usar el nombre del chat si está disponible, si no usar el nombre del remitente
         String displayName = (chatName != null && !chatName.isEmpty()) ? chatName : senderName;
 
-        // Determinar si es una imagen
-        boolean isImage = MESSAGE_TYPE_IMAGE.equals(messageType);
+        // Determinar si es una imagen o mensaje mixto
+        boolean isImage = MESSAGE_TYPE_IMAGE.equals(messageType) || MESSAGE_TYPE_MIXED.equals(messageType);
+
+        // Para imágenes, usar la URL si está disponible, si no usar el contenido del mensaje
+        String notificationContent = isImage && imageUrl != null ? imageUrl : messageContent;
 
         // Usar el helper para mostrar la notificación (SOLID - Separation of Concerns)
         NotificationHelper notificationHelper = NotificationHelper.getInstance(this);
         notificationHelper.showMessageNotification(
             chatId,
             displayName,
-            messageContent != null ? messageContent : "",
+            notificationContent != null ? notificationContent : "",
             isImage
         );
 

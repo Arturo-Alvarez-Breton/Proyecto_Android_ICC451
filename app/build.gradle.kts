@@ -48,6 +48,9 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
+    // PhotoView for image zoom functionality
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
+
     // Firebase BoM - gestiona todas las versiones de Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-auth")

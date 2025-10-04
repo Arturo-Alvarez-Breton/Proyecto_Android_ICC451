@@ -75,4 +75,10 @@
     <string name="notification_permission_ok">Activar</string>
     <string name="notification_permission_no_thanks">Ahora no</string>
 
+    <!-- Image Viewer Activity strings -->
+    <string name="image_fullscreen_description">Imagen en pantalla completa</string>
+    <string name="close_image">Cerrar imagen</string>
+    <string name="error_loading_image">Error al cargar la imagen</string>
+    <string name="image_from">Imagen de %1$s</string>
+
 </resources>

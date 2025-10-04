@@ -1,6 +1,7 @@
 package com.example.klk.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.klk.R;
+import com.example.klk.ImageViewerActivity;
 import com.example.klk.models.Message;
 import com.example.klk.models.MessageType;
 import com.bumptech.glide.Glide;
@@ -21,6 +23,7 @@ import java.util.Locale;
 /**
  * Adaptador para mostrar mensajes en RecyclerView
  * Implementa el patrón ViewHolder y soporta diferentes tipos de mensajes
+ * Actualizado con funcionalidad de vista expandida de imágenes
  */
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -36,11 +39,40 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final String currentUserId;
     private final SimpleDateFormat timeFormat;
 
+    /**
+     * Interfaz para callbacks de click en imágenes (Open/Closed Principle)
+     */
+    public interface OnImageClickListener {
+        void onImageClick(String imageUrl, String senderName);
+    }
+
+    private OnImageClickListener imageClickListener;
+
     public MessageAdapter(Context context, String currentUserId) {
         this.context = context;
         this.currentUserId = currentUserId;
         this.messages = new ArrayList<>();
         this.timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+        // Implementación por defecto del listener (DRY)
+        this.imageClickListener = this::openImageViewer;
+    }
+
+    /**
+     * Método helper para abrir el visor de imágenes (DRY - reutilizado por todos los ViewHolders)
+     */
+    private void openImageViewer(String imageUrl, String senderName) {
+        Intent intent = new Intent(context, ImageViewerActivity.class);
+        intent.putExtra(ImageViewerActivity.EXTRA_IMAGE_URL, imageUrl);
+        intent.putExtra(ImageViewerActivity.EXTRA_SENDER_NAME, senderName);
+        context.startActivity(intent);
+    }
+
+    /**
+     * Permite establecer un listener personalizado (Open/Closed Principle)
+     */
+    public void setOnImageClickListener(OnImageClickListener listener) {
+        this.imageClickListener = listener;
     }
 
     @Override
@@ -202,6 +234,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_error)
                 .into(imageMessage);
+
+            // Configurar click listener para la imagen
+            imageMessage.setOnClickListener(v -> imageClickListener.onImageClick(message.getImageUrl(), ""));
         }
     }
 
@@ -230,6 +265,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_error)
                 .into(imageMessage);
+
+            // Configurar click listener para la imagen
+            imageMessage.setOnClickListener(v -> imageClickListener.onImageClick(message.getImageUrl(), message.getSenderName()));
         }
     }
 
@@ -258,6 +296,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_error)
                 .into(imageMessage);
+
+            // Configurar click listener para la imagen
+            imageMessage.setOnClickListener(v -> imageClickListener.onImageClick(message.getImageUrl(), ""));
         }
     }
 
@@ -289,6 +330,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_error)
                 .into(imageMessage);
+
+            // Configurar click listener para la imagen
+            imageMessage.setOnClickListener(v -> imageClickListener.onImageClick(message.getImageUrl(), message.getSenderName()));
         }
     }
 }

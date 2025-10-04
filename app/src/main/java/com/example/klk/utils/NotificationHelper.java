@@ -5,20 +5,28 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import androidx.core.app.NotificationCompat;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 import com.example.klk.ChatActivity;
 import com.example.klk.R;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Helper class para manejar notificaciones push
  * Aplica el principio SOLID de Single Responsibility:
  * Solo se encarga de crear y mostrar notificaciones
+ * Actualizado con soporte para vista previa de imágenes (BigPictureStyle)
  */
 public class NotificationHelper {
 
+    private static final String TAG = "NotificationHelper";
     private static final String CHANNEL_ID = "klk_messages_channel";
     private static final String CHANNEL_NAME = "Mensajes de KlK";
     private static final String CHANNEL_DESCRIPTION = "Notificaciones de mensajes nuevos en tus chats";
@@ -26,6 +34,7 @@ public class NotificationHelper {
 
     private final Context context;
     private final NotificationManager notificationManager;
+    private final ExecutorService executorService; // Para operaciones asíncronas
 
     /**
      * Constructor privado para inicializar el helper
@@ -35,6 +44,7 @@ public class NotificationHelper {
         this.context = context.getApplicationContext();
         this.notificationManager = (NotificationManager)
             this.context.getSystemService(Context.NOTIFICATION_SERVICE);
+        this.executorService = Executors.newSingleThreadExecutor();
         createNotificationChannel();
     }
 
@@ -71,37 +81,108 @@ public class NotificationHelper {
      * Muestra una notificación de mensaje nuevo
      * @param chatId ID del chat
      * @param chatName Nombre del chat o remitente
-     * @param messageContent Contenido del mensaje
+     * @param messageContent Contenido del mensaje o URL de imagen
      * @param isImage Si el mensaje es una imagen
      */
     public void showMessageNotification(String chatId, String chatName,
                                        String messageContent, boolean isImage) {
-        // YAGNI: Solo implementamos lo que necesitamos
+        if (isImage && messageContent != null && !messageContent.isEmpty()) {
+            // Si es una imagen, cargarla y mostrar con BigPictureStyle
+            showImageNotification(chatId, chatName, messageContent);
+        } else {
+            // Mostrar notificación de texto estándar
+            showTextNotification(chatId, chatName, messageContent);
+        }
+    }
+
+    /**
+     * Muestra una notificación de texto estándar (DRY - método extraído)
+     */
+    private void showTextNotification(String chatId, String chatName, String messageContent) {
         Intent intent = createChatIntent(chatId, chatName);
         PendingIntent pendingIntent = createPendingIntent(intent, chatId);
-
-        String displayMessage = isImage ?
-            context.getString(R.string.notification_new_image_message) :
-            messageContent;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(chatName)
-            .setContentText(displayMessage)
+            .setContentText(messageContent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-            .setAutoCancel(true) // Se cierra al tocar
+            .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .setSound(getDefaultNotificationSound())
-            .setVibrate(new long[]{0, 250, 250, 250}); // Patrón de vibración
+            .setVibrate(new long[]{0, 250, 250, 250});
 
-        // Estilo expandido para mensajes largos
-        if (!isImage && messageContent.length() > 40) {
+        // Estilo expandido para mensajes largos (KISS)
+        if (messageContent != null && messageContent.length() > 40) {
             builder.setStyle(new NotificationCompat.BigTextStyle()
                 .bigText(messageContent));
         }
 
-        // Usar el hashCode del chatId como notification ID para agrupar por chat
+        int notificationId = NOTIFICATION_ID_BASE + Math.abs(chatId.hashCode() % 10000);
+        notificationManager.notify(notificationId, builder.build());
+    }
+
+    /**
+     * Muestra una notificación con imagen usando BigPictureStyle
+     * Carga la imagen de forma asíncrona (YAGNI - solo lo necesario)
+     */
+    private void showImageNotification(String chatId, String chatName, String imageUrl) {
+        // Ejecutar carga de imagen en background thread
+        executorService.execute(() -> {
+            try {
+                // Cargar la imagen usando Glide de forma síncrona
+                FutureTarget<Bitmap> futureTarget = Glide.with(context)
+                    .asBitmap()
+                    .load(imageUrl)
+                    .submit(512, 512); // Tamaño optimizado para notificaciones
+
+                Bitmap bitmap = futureTarget.get(); // Obtener bitmap de forma síncrona
+
+                // Crear y mostrar notificación con la imagen
+                showNotificationWithBitmap(chatId, chatName, bitmap);
+
+                // Limpiar recursos de Glide
+                Glide.with(context).clear(futureTarget);
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error al cargar imagen para notificación: " + e.getMessage());
+                // Fallback: mostrar notificación de texto
+                showTextNotification(chatId, chatName,
+                    context.getString(R.string.notification_new_image_message));
+            }
+        });
+    }
+
+    /**
+     * Muestra la notificación con el bitmap cargado (DRY - método extraído)
+     */
+    private void showNotificationWithBitmap(String chatId, String chatName, Bitmap bitmap) {
+        Intent intent = createChatIntent(chatId, chatName);
+        PendingIntent pendingIntent = createPendingIntent(intent, chatId);
+
+        String contentText = context.getString(R.string.notification_new_image_message);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(chatName)
+            .setContentText(contentText)
+            .setLargeIcon(bitmap) // Icono grande (thumbnail)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .setSound(getDefaultNotificationSound())
+            .setVibrate(new long[]{0, 250, 250, 250});
+
+        // BigPictureStyle para mostrar imagen completa al expandir
+        NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle()
+            .bigPicture(bitmap)
+            .bigLargeIcon((Bitmap) null) // Ocultar large icon cuando está expandida
+            .setSummaryText(contentText);
+
+        builder.setStyle(bigPictureStyle);
+
         int notificationId = NOTIFICATION_ID_BASE + Math.abs(chatId.hashCode() % 10000);
         notificationManager.notify(notificationId, builder.build());
     }
@@ -162,5 +243,13 @@ public class NotificationHelper {
         int notificationId = NOTIFICATION_ID_BASE + Math.abs(chatId.hashCode() % 10000);
         notificationManager.cancel(notificationId);
     }
-}
 
+    /**
+     * Limpia recursos al destruir (buena práctica de Android)
+     */
+    public void cleanup() {
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+        }
+    }
+}
