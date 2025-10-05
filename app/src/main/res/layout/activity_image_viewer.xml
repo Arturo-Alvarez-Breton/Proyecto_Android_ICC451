@@ -25,7 +25,7 @@
         android:contentDescription="@string/close_image"
         android:padding="12dp"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
-        android:tint="@android:color/white" />
+        app:tint="@android:color/white" />
 
     <!-- ProgressBar para mostrar mientras carga -->
     <ProgressBar
@@ -36,4 +36,3 @@
         android:visibility="gone" />
 
 </RelativeLayout>
-

@@ -46,7 +46,8 @@ dependencies {
 
     // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("androidx.activity:activity:1.11.0")
+    // Fixed: Using compatible activity version for compileSdk 34
+    implementation("androidx.activity:activity:1.9.2")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     // PhotoView for image zoom functionality

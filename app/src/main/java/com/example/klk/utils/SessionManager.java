@@ -22,6 +22,7 @@ public class SessionManager {
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private static SessionManager instance;
 
     /**
      * Inicializa el SessionManager con el contexto de la aplicación.
@@ -29,6 +30,16 @@ public class SessionManager {
     public SessionManager(Context context) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
+    }
+
+    /**
+     * Obtiene la instancia única de SessionManager (patrón Singleton)
+     */
+    public static synchronized SessionManager getInstance(Context context) {
+        if (instance == null) {
+            instance = new SessionManager(context.getApplicationContext());
+        }
+        return instance;
     }
 
     /**
@@ -126,5 +137,11 @@ public class SessionManager {
      */
     public long getUserLastSeen() {
         return sharedPreferences.getLong(KEY_USER_LAST_SEEN, 0);
+    }
+
+    public void updateUserSession(User user) {
+        if (isLoggedIn() && user.getId().equals(getUserId())) {
+            saveSession(user);
+        }
     }
 }

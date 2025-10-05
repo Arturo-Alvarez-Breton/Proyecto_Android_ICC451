@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -171,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
         btnGroupChatsFilter = findViewById(R.id.btnGroupChatsFilter);
         btnContactsChatsFilter = findViewById(R.id.btnContactsChatsFilter);
         btnSettings = findViewById(R.id.btnSettings);
-        btnLogout = findViewById(R.id.btnLogout);
         recyclerViewChats = findViewById(R.id.recyclerViewChats);
 
         // FAB Menu Components
@@ -397,10 +398,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Maneja el acceso a configuraciones
+     * Maneja el acceso a configuraciones mostrando un menú desplegable
      */
     private void handleSettings() {
-        // TODO: Implementar navegación a configuraciones
+        PopupMenu popup = new PopupMenu(this, btnSettings);
+        popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.menu_profile) {
+                    // Navegar a Mi Perfil
+                    openUserProfile();
+                    return true;
+                } else if (itemId == R.id.menu_logout) {
+                    // Cerrar sesión
+                    handleLogout();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        popup.show();
+    }
+
+    /**
+     * Abre la actividad de perfil de usuario
+     */
+    private void openUserProfile() {
+        Intent intent = new Intent(this, user_profile.class);
+        startActivity(intent);
     }
 
     /**

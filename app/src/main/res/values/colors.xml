@@ -32,6 +32,8 @@
     <color name="input_field_background">#BFEEEEEE</color>
     <color name="input_field_stroke">#FFFFFF</color>
     <color name="input_field_stroke_focused">#EEEEEE</color>
+    <color name="input_hint_color">#80212327</color>
+    <color name="input_stroke_color">#EEEEEE</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>

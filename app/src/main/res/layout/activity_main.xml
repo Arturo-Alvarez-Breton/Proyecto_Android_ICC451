@@ -28,23 +28,23 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="8dp"/>
 
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="@string/btn_logout"
-                android:id="@+id/btnLogout"
-                android:backgroundTint="@color/btn_logout"
-                android:textColor="@color/white"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="4dp"
-                android:layout_marginStart="16dp"
-                app:layout_constraintStart_toEndOf="@+id/tvUsername"/>
+<!--        <Button-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="36dp"-->
+<!--                android:text="@string/btn_logout"-->
+<!--                android:id="@+id/btnLogout"-->
+<!--                android:backgroundTint="@color/btn_logout"-->
+<!--                android:textColor="@color/white"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                android:layout_marginTop="4dp"-->
+<!--                android:layout_marginStart="16dp"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/tvUsername"/>-->
 
         <com.google.android.material.button.MaterialButton
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:id="@+id/btnSettings"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="4dp"
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/btn_menu"
                 app:layout_constraintEnd_toEndOf="parent"

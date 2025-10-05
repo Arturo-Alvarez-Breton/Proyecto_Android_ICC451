@@ -24,7 +24,7 @@
     <string name="input_search_bar">Buscar</string>
     <string name="input_email">Correo electrónico</string>
     <string name="input_username">Usuario</string>
-    <string name="input_full_name">Nombre completo</string>
+    <string name="input_full_name">Nombre de Usuario</string>
     <string name="input_password">Contraseña</string>
     <string name="app_version">App Version 0.0.8</string>
     <string name="btn_all_chats_filter">Todos</string>
@@ -87,4 +87,21 @@
     <string name="back_button">regresar</string>
     <string name="title_user_profile">Mi Perfil</string>
 
+    <!-- User Profile Activity strings -->
+    <string name="btn_change_photo">Cambiar foto</string>
+    <string name="input_current_password">Contraseña actual</string>
+    <string name="input_new_password">Nueva contraseña</string>
+    <string name="helper_password_optional">Deja en blanco para mantener la contraseña actual</string>
+    <string name="error_name_required">El nombre es obligatorio</string>
+    <string name="error_current_password_required">La contraseña actual es obligatoria para cambios</string>
+    <string name="error_weak_password">La nueva contraseña debe tener al menos 6 caracteres</string>
+    <string name="success_profile_updated">Perfil actualizado exitosamente</string>
+    <string name="error_updating_profile">Error al actualizar el perfil: %1$s</string>
+    <string name="error_loading_profile">Error al cargar el perfil del usuario</string>
+    <string name="confirm_discard_changes">¿Descartar los cambios realizados?</string>
+    <string name="btn_discard">Descartar</string>
+    <string name="btn_keep_editing">Continuar editando</string>
+
+    <!-- Menu strings -->
+    <string name="menu_my_profile">Mi Perfil</string>
 </resources>
