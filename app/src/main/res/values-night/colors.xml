@@ -28,7 +28,7 @@
     <color name="text_on_btn_chats_filters">#FFFFFFFF</color>
 
     <color name="input_field">#EEEEEE</color>
-    <color name="input_field_hint">#80FFFFFF</color>
+    <color name="input_field_hint">#EEEEEE</color>
     <color name="input_field_background">#B2393E46</color>
     <color name="input_field_stroke">#212327</color>
     <color name="input_field_stroke_focused">#393E46</color>

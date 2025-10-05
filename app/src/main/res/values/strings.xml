@@ -26,7 +26,7 @@
     <string name="input_username">Usuario</string>
     <string name="input_full_name">Nombre completo</string>
     <string name="input_password">Contraseña</string>
-    <string name="app_version">App Version 0.0.2</string>
+    <string name="app_version">App Version 0.0.8</string>
     <string name="btn_all_chats_filter">Todos</string>
     <string name="btn_groups_chats_filter">Grupos</string>
     <string name="btn_contacts_chats_filter">Contactos</string>

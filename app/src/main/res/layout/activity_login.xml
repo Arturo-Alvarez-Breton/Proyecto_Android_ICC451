@@ -21,12 +21,15 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                                android:text="@string/app_title"
-                android:textSize="32sp"
+                android:text="@string/app_title"
+                android:textSize="64sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_on_surface"
+                android:textColor="@color/text_on_background"
                 android:layout_marginBottom="48dp"
-                android:gravity="center"/>
+                android:gravity="center"
+                style="@style/Widget.MaterialComponents.TextView"
+        />
+
 
         <!-- Email Field (solo visible en modo registro) -->
         <com.google.android.material.textfield.TextInputLayout
@@ -38,7 +41,13 @@
                 app:errorEnabled="true"
                 app:errorTextColor="@android:color/holo_red_dark"
                 android:visibility="gone"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:hintTextColor="@color/input_hint_color"
+                app:boxStrokeColor="@color/input_stroke_color"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusBottomEnd="10dp">
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailField"
@@ -58,7 +67,13 @@
                 android:hint="@string/input_username"
                 app:errorEnabled="true"
                 app:errorTextColor="@android:color/holo_red_dark"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:hintTextColor="@color/input_hint_color"
+                app:boxStrokeColor="@color/input_stroke_color"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusBottomEnd="10dp">
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/usernameField"
@@ -79,14 +94,21 @@
                 app:errorEnabled="true"
                 app:errorTextColor="@android:color/holo_red_dark"
                 app:passwordToggleEnabled="true"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:hintTextColor="@color/input_hint_color"
+                app:boxStrokeColor="@color/input_stroke_color"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusBottomEnd="10dp">
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/passwordField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+            />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,7 +129,11 @@
                 android:text="@string/btn_login"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                style="@style/Widget.MaterialComponents.Button"/>
+                style="@style/Widget.MaterialComponents.Button"
+                android:backgroundTint="@color/btn_login"
+                android:textColor="@color/text_on_btn_login"
+                android:elevation="0dp"
+                app:cornerRadius="20dp"/>
 
         <!-- Toggle Mode Button -->
         <Button
@@ -116,7 +142,9 @@
                 android:layout_height="56dp"
                 android:text="@string/btn_register"
                 android:textSize="14sp"
-                style="@style/Widget.MaterialComponents.Button.TextButton"/>
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/text_on_background"
+                app:cornerRadius="20dp"/>
 
     </LinearLayout>
 
