@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.klk.adapters.MessageAdapter;
 import com.example.klk.models.Message;
+import com.example.klk.repositories.ChatRepository;
 import com.example.klk.repositories.MessageRepository;
 import com.example.klk.utils.SessionManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -444,6 +445,17 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Marcar mensajes como leídos cuando el usuario abre el chat
+        markMessagesAsRead();
+    }
+
+    /**
+     * Marca los mensajes del chat como leídos para el usuario actual
+     */
+    private void markMessagesAsRead() {
+        ChatRepository chatRepository = ChatRepository.getInstance();
+        chatRepository.markChatAsRead(chatId, currentUserId);
     }
 
     /**

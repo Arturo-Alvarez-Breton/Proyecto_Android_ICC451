@@ -10,7 +10,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.ListenerRegistration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Repository simplificado para manejar chats con Firebase Firestore
@@ -236,6 +238,53 @@ public class ChatRepository {
                 "lastMessageSenderId", senderId,
                 "lastMessageTime", System.currentTimeMillis(),
                 "lastMessageType", messageType
+            );
+    }
+
+    /**
+     * Actualiza el último mensaje y el contador de mensajes no leídos
+     * Incrementa el contador para todos los participantes excepto el remitente
+     * @param chatId ID del chat
+     * @param lastMessage Texto del último mensaje
+     * @param senderId ID del usuario que envió el mensaje
+     * @param messageType Tipo de mensaje
+     */
+    public void updateLastMessageWithUnread(String chatId, String lastMessage, String senderId, MessageType messageType) {
+        chatsRef.document(chatId).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Chat chat = documentSnapshot.toObject(Chat.class);
+                if (chat != null && chat.getParticipantIds() != null) {
+                    // Incrementar contador de no leídos para todos excepto el remitente
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("lastMessage", lastMessage);
+                    updates.put("lastMessageSenderId", senderId);
+                    updates.put("lastMessageTime", System.currentTimeMillis());
+                    updates.put("lastMessageType", messageType);
+
+                    // Actualizar contadores de no leídos
+                    for (String participantId : chat.getParticipantIds()) {
+                        if (!participantId.equals(senderId)) {
+                            int currentCount = chat.getUnreadCountForUser(participantId);
+                            updates.put("unreadCount." + participantId, currentCount + 1);
+                        }
+                    }
+
+                    chatsRef.document(chatId).update(updates);
+                }
+            }
+        });
+    }
+
+    /**
+     * Marca los mensajes de un chat como leídos para un usuario específico
+     * @param chatId ID del chat
+     * @param userId ID del usuario
+     */
+    public void markChatAsRead(String chatId, String userId) {
+        chatsRef.document(chatId)
+            .update("unreadCount." + userId, 0)
+            .addOnFailureListener(e ->
+                android.util.Log.e("ChatRepository", "Error al marcar como leído: " + e.getMessage())
             );
     }
 

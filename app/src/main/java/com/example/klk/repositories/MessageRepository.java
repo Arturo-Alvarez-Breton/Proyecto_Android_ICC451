@@ -245,7 +245,7 @@ public class MessageRepository {
     }
 
     /**
-     * Actualiza el último mensaje del chat
+     * Actualiza el último mensaje del chat y gestiona el contador de mensajes no leídos
      * Descifra el contenido antes de actualizar para mostrar texto legible
      */
     private void updateChatLastMessage(Message message) {
@@ -261,7 +261,8 @@ public class MessageRepository {
             lastMessageText = decryptedContent != null ? decryptedContent : message.getContent();
         }
 
-        chatRepository.updateLastMessage(
+        // Actualizar el último mensaje y el contador de no leídos
+        chatRepository.updateLastMessageWithUnread(
             message.getChatId(),
             lastMessageText,
             message.getSenderId(),

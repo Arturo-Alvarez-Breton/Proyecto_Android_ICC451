@@ -2,7 +2,9 @@ package com.example.klk.models;
 
 import com.google.firebase.firestore.PropertyName;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Chat {
     private String id;
@@ -12,8 +14,11 @@ public class Chat {
     private String lastMessageSenderId;
     private long lastMessageTime;
     private MessageType lastMessageType;
+    // Mapa para rastrear mensajes no leídos por usuario (userId -> count)
+    private Map<String, Integer> unreadCount;
 
     public Chat() {
+        this.unreadCount = new HashMap<>();
     }
 
     public Chat(List<String> participantIds, List<String> participantNames) {
@@ -23,10 +28,11 @@ public class Chat {
         this.lastMessageSenderId = "";
         this.lastMessageTime = System.currentTimeMillis();
         this.lastMessageType = MessageType.TEXT;
+        this.unreadCount = new HashMap<>();
     }
 
-    public Chat(String id, List<String> participantIds, List<String> participantNames, 
-                String lastMessage, String lastMessageSenderId, long lastMessageTime, 
+    public Chat(String id, List<String> participantIds, List<String> participantNames,
+                String lastMessage, String lastMessageSenderId, long lastMessageTime,
                 MessageType lastMessageType) {
         this.id = id;
         this.participantIds = participantIds;
@@ -35,6 +41,7 @@ public class Chat {
         this.lastMessageSenderId = lastMessageSenderId;
         this.lastMessageTime = lastMessageTime;
         this.lastMessageType = lastMessageType;
+        this.unreadCount = new HashMap<>();
     }
 
     @PropertyName("id")
@@ -105,5 +112,37 @@ public class Chat {
     @PropertyName("lastMessageType")
     public void setLastMessageType(MessageType lastMessageType) {
         this.lastMessageType = lastMessageType;
+    }
+
+    @PropertyName("unreadCount")
+    public Map<String, Integer> getUnreadCount() {
+        return unreadCount;
+    }
+
+    @PropertyName("unreadCount")
+    public void setUnreadCount(Map<String, Integer> unreadCount) {
+        this.unreadCount = unreadCount;
+    }
+
+    /**
+     * Obtiene el número de mensajes no leídos para un usuario específico
+     * @param userId ID del usuario
+     * @return Número de mensajes no leídos
+     */
+    public int getUnreadCountForUser(String userId) {
+        if (unreadCount == null) {
+            return 0;
+        }
+        Integer count = unreadCount.get(userId);
+        return count != null ? count : 0;
+    }
+
+    /**
+     * Verifica si el usuario tiene mensajes no leídos
+     * @param userId ID del usuario
+     * @return true si tiene mensajes no leídos
+     */
+    public boolean hasUnreadMessages(String userId) {
+        return getUnreadCountForUser(userId) > 0;
     }
 }

@@ -37,6 +37,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private EditText chatSearchField;
     private Button btnAllChatsFilter, btnGroupChatsFilter, btnContactsChatsFilter;
-    private Button btnSettings, btnLogout;
+    private Button btnSettings;
     private RecyclerView recyclerViewChats;
 
     // FAB Menu Components
@@ -286,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
      * Configura los botones de acción
      */
     private void setupActionButtons() {
-        btnLogout.setOnClickListener(v -> handleLogout());
         btnSettings.setOnClickListener(v -> handleSettings());
 
         // Configurar FAB Menu
@@ -336,16 +336,22 @@ public class MainActivity extends AppCompatActivity {
             // Búsqueda usa los datos ya cargados (más eficiente)
             chatRepository.searchChats(currentUserId, searchQuery)
                 .observe(this, chats -> {
+                    // Manejar null safety - importante para cuentas nuevas
                     if (chats != null) {
                         chatAdapter.updateChats(chats);
+                    } else {
+                        chatAdapter.updateChats(new ArrayList<>());
                     }
                 });
         } else {
             // Un solo método para todos los casos (KISS principle)
             chatRepository.getUserChats(currentUserId, currentFilter)
                 .observe(this, chats -> {
+                    // Manejar null safety - importante para cuentas nuevas
                     if (chats != null) {
                         chatAdapter.updateChats(chats);
+                    } else {
+                        chatAdapter.updateChats(new ArrayList<>());
                     }
                 });
         }
@@ -361,8 +367,11 @@ public class MainActivity extends AppCompatActivity {
             // Usar búsqueda optimizada
             chatRepository.searchChats(currentUserId, query)
                 .observe(this, chats -> {
+                    // Manejar null safety - importante para cuentas nuevas
                     if (chats != null) {
                         chatAdapter.updateChats(chats);
+                    } else {
+                        chatAdapter.updateChats(new ArrayList<>());
                     }
                 });
         }
@@ -387,14 +396,6 @@ public class MainActivity extends AppCompatActivity {
         btnAllChatsFilter.setBackgroundTintList(getColorStateList(inactiveColor));
         btnGroupChatsFilter.setBackgroundTintList(getColorStateList(inactiveColor));
         btnContactsChatsFilter.setBackgroundTintList(getColorStateList(inactiveColor));
-    }
-
-    /**
-     * Maneja el cierre de sesión
-     */
-    private void handleLogout() {
-        sessionManager.clearSession();
-        navigateToLogin();
     }
 
     /**
@@ -423,6 +424,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         popup.show();
+    }
+
+    /**
+     * Maneja el cierre de sesión del usuario
+     */
+    private void handleLogout() {
+        sessionManager.clearSession();
+        navigateToLogin();
     }
 
     /**
@@ -488,6 +497,15 @@ public class MainActivity extends AppCompatActivity {
      * Obtiene el nombre del chat para mostrar
      */
     private String getChatDisplayName(Chat chat) {
+        // Verificar null safety para cuentas nuevas
+        if (chat == null || chat.getParticipantNames() == null || chat.getParticipantIds() == null) {
+            return "Chat";
+        }
+
+        if (chat.getParticipantNames().isEmpty() || chat.getParticipantIds().isEmpty()) {
+            return "Chat";
+        }
+
         if (chat.getParticipantNames().size() == 2) {
             // Chat individual - mostrar nombre del otro usuario
             for (int i = 0; i < chat.getParticipantIds().size(); i++) {

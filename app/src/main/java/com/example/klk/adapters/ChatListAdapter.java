@@ -77,6 +77,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
      * Obtiene el nombre del chat para mostrar
      */
     private String getChatDisplayName(Chat chat) {
+        // Verificar null safety
+        if (chat == null || chat.getParticipantNames() == null || chat.getParticipantIds() == null) {
+            return "Chat";
+        }
+
+        if (chat.getParticipantNames().isEmpty() || chat.getParticipantIds().isEmpty()) {
+            return "Chat";
+        }
+
         if (chat.getParticipantNames().size() == 2) {
             // Chat individual - mostrar nombre del otro usuario
             for (int i = 0; i < chat.getParticipantIds().size(); i++) {
@@ -104,6 +113,11 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
      * Formatea el último mensaje para mostrar
      */
     private String formatLastMessage(Chat chat) {
+        // Verificar null safety
+        if (chat == null || chat.getLastMessage() == null) {
+            return "Nuevo chat";
+        }
+
         if (chat.getLastMessage().isEmpty()) {
             return "Nuevo chat";
         }
@@ -119,6 +133,11 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
      * Formatea el tiempo del último mensaje
      */
     private String formatTime(long timestamp) {
+        // Verificar timestamp válido
+        if (timestamp <= 0) {
+            return "";
+        }
+
         Date messageDate = new Date(timestamp);
         Date today = new Date();
 
@@ -185,9 +204,17 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
                 .placeholder(R.drawable.baseline_person_24)
                 .into(imageProfile);
 
-            // Ocultar indicador de no leídos por ahora
-            // TODO: Implementar lógica de mensajes no leídos
-            unreadIndicator.setVisibility(View.GONE);
+            // Mostrar indicador de mensajes no leídos si corresponde
+            if (chat.hasUnreadMessages(currentUserId)) {
+                unreadIndicator.setVisibility(View.VISIBLE);
+                // Opcional: hacer el texto en negrita si hay mensajes no leídos
+                textLastMessage.setTypeface(null, android.graphics.Typeface.BOLD);
+                textChatName.setTypeface(null, android.graphics.Typeface.BOLD);
+            } else {
+                unreadIndicator.setVisibility(View.GONE);
+                textLastMessage.setTypeface(null, android.graphics.Typeface.NORMAL);
+                textChatName.setTypeface(null, android.graphics.Typeface.NORMAL);
+            }
         }
     }
 
