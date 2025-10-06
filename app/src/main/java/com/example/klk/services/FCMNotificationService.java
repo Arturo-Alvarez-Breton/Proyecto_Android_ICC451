@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import com.example.klk.utils.CryptoUtil;
 import com.example.klk.utils.NotificationHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +33,7 @@ public class FCMNotificationService extends FirebaseMessagingService {
     private static final String KEY_MESSAGE_CONTENT = "messageContent";
     private static final String KEY_MESSAGE_TYPE = "messageType";
     private static final String KEY_IMAGE_URL = "imageUrl";
+    private static final String KEY_IS_GROUP_CHAT = "isGroupChat";
     private static final String MESSAGE_TYPE_IMAGE = "IMAGE";
     private static final String MESSAGE_TYPE_MIXED = "MIXED";
 
@@ -72,6 +74,7 @@ public class FCMNotificationService extends FirebaseMessagingService {
         String messageContent = data.get(KEY_MESSAGE_CONTENT);
         String messageType = data.get(KEY_MESSAGE_TYPE);
         String imageUrl = data.get(KEY_IMAGE_URL);
+        String isGroupChat = data.get(KEY_IS_GROUP_CHAT);
 
         // Validar datos requeridos
         if (chatId == null || senderName == null) {
@@ -92,34 +95,68 @@ public class FCMNotificationService extends FirebaseMessagingService {
             return;
         }
 
-        // Mostrar la notificación
-        showNotification(chatId, chatName, senderName, messageContent, messageType, imageUrl);
+        // IMPORTANTE: Descifrar el mensaje antes de mostrarlo
+        String decryptedContent = messageContent;
+        if (messageContent != null && !messageContent.isEmpty() && chatId != null) {
+            // Solo descifrar si es texto (no si es imagen)
+            if (!MESSAGE_TYPE_IMAGE.equals(messageType)) {
+                String decrypted = CryptoUtil.decrypt(messageContent, chatId);
+                if (decrypted != null) {
+                    decryptedContent = decrypted;
+                    Log.d(TAG, "Mensaje descifrado correctamente");
+                }
+            }
+        }
+
+        // Mostrar la notificación con el contenido descifrado
+        showNotification(chatId, chatName, senderName, decryptedContent, messageType, imageUrl, isGroupChat);
     }
 
     /**
      * Muestra la notificación usando el NotificationHelper
      */
     private void showNotification(String chatId, String chatName, String senderName,
-                                  String messageContent, String messageType, String imageUrl) {
-        // Usar el nombre del chat si está disponible, si no usar el nombre del remitente
-        String displayName = (chatName != null && !chatName.isEmpty()) ? chatName : senderName;
+                                  String messageContent, String messageType, String imageUrl, String isGroupChat) {
+        // Determinar el título correcto de la notificación
+        String notificationTitle;
+        boolean isGroup = "true".equals(isGroupChat);
+
+        if (isGroup && chatName != null && !chatName.isEmpty()) {
+            // Para grupos: "Nombre del remitente en Nombre del Grupo"
+            notificationTitle = senderName + " en " + chatName;
+        } else {
+            // Para chats individuales: solo el nombre del remitente
+            notificationTitle = senderName;
+        }
+
+        // Determinar el contenido de la notificación
+        String notificationBody;
+        if (MESSAGE_TYPE_IMAGE.equals(messageType)) {
+            notificationBody = "📷 Imagen";
+        } else if (MESSAGE_TYPE_MIXED.equals(messageType)) {
+            notificationBody = (messageContent != null && !messageContent.isEmpty())
+                ? "📷 " + messageContent
+                : "📷 Imagen";
+        } else {
+            // Mensaje de texto descifrado
+            notificationBody = (messageContent != null && !messageContent.isEmpty())
+                ? messageContent
+                : "Nuevo mensaje";
+        }
 
         // Determinar si es una imagen o mensaje mixto
         boolean isImage = MESSAGE_TYPE_IMAGE.equals(messageType) || MESSAGE_TYPE_MIXED.equals(messageType);
-
-        // Para imágenes, usar la URL si está disponible, si no usar el contenido del mensaje
-        String notificationContent = isImage && imageUrl != null ? imageUrl : messageContent;
 
         // Usar el helper para mostrar la notificación (SOLID - Separation of Concerns)
         NotificationHelper notificationHelper = NotificationHelper.getInstance(this);
         notificationHelper.showMessageNotification(
             chatId,
-            displayName,
-            notificationContent != null ? notificationContent : "",
+            notificationTitle,
+            notificationBody,
             isImage
         );
 
-        Log.d(TAG, "Notificación mostrada para el chat: " + displayName);
+        Log.d(TAG, "Notificación mostrada - Título: " + notificationTitle + ", Contenido: " + notificationBody);
     }
 
     /**
