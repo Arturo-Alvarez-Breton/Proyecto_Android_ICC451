@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.example.klk.models.Message;
 import com.example.klk.models.MessageType;
+import com.example.klk.utils.CryptoUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -185,11 +186,11 @@ public class MessageRepository {
                 // Obtener URL de descarga
                 imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     String imageUrl = uri.toString();
-                    
+
                     // Crear mensaje con texto e imagen
                     Message message = new Message(chatId, senderId, senderName, text, MessageType.MIXED);
                     message.setImageUrl(imageUrl);
-                    
+
                     // Enviar el mensaje combinado
                     sendMessage(message, callback);
                 })
@@ -208,8 +209,23 @@ public class MessageRepository {
 
     /**
      * Método privado para enviar cualquier tipo de mensaje
+     * Cifra el contenido del mensaje antes de enviarlo a Firebase
      */
     private void sendMessage(Message message, MessageCallback callback) {
+        // Cifrar el contenido del mensaje si tiene texto
+        if (message.getContent() != null && !message.getContent().isEmpty()) {
+            String encryptedContent = CryptoUtil.encrypt(message.getContent(), message.getChatId());
+            if (encryptedContent != null) {
+                message.setContent(encryptedContent);
+            } else {
+                // Si falla el cifrado, notificar error
+                if (callback != null) {
+                    callback.onError("Error al cifrar el mensaje");
+                }
+                return;
+            }
+        }
+
         messagesRef.add(message)
             .addOnSuccessListener(documentReference -> {
                 message.setId(documentReference.getId());
@@ -230,10 +246,20 @@ public class MessageRepository {
 
     /**
      * Actualiza el último mensaje del chat
+     * Descifra el contenido antes de actualizar para mostrar texto legible
      */
     private void updateChatLastMessage(Message message) {
         ChatRepository chatRepository = ChatRepository.getInstance();
-        String lastMessageText = message.getMessageType() == MessageType.IMAGE ? "📷 Imagen" : message.getContent();
+
+        // Determinar el texto a mostrar según el tipo de mensaje
+        String lastMessageText;
+        if (message.getMessageType() == MessageType.IMAGE) {
+            lastMessageText = "📷 Imagen";
+        } else {
+            // Descifrar el contenido para mostrar en la lista de chats
+            String decryptedContent = CryptoUtil.decrypt(message.getContent(), message.getChatId());
+            lastMessageText = decryptedContent != null ? decryptedContent : message.getContent();
+        }
 
         chatRepository.updateLastMessage(
             message.getChatId(),
@@ -245,8 +271,9 @@ public class MessageRepository {
 
     /**
      * Obtiene los mensajes de un chat en tiempo real
+     * Descifra el contenido de los mensajes al recibirlos
      * @param chatId ID del chat
-     * @return LiveData con la lista de mensajes
+     * @return LiveData con la lista de mensajes descifrados
      */
     public LiveData<List<Message>> getChatMessages(String chatId) {
         MutableLiveData<List<Message>> messagesLiveData = new MutableLiveData<>();
@@ -272,6 +299,13 @@ public class MessageRepository {
                 snapshots.forEach(document -> {
                     Message message = document.toObject(Message.class);
                     message.setId(document.getId());
+
+                    // Descifrar el contenido del mensaje si tiene texto
+                    if (message.getContent() != null && !message.getContent().isEmpty()) {
+                        String decryptedContent = CryptoUtil.decrypt(message.getContent(), chatId);
+                        message.setContent(decryptedContent);
+                    }
+
                     messages.add(message);
                 });
                 // Ordenar por timestamp ASC para mostrar cronológicamente
