@@ -198,6 +198,40 @@ public class ChatRepository {
     }
 
     /**
+     * Crea un chat grupal con nombre (YAGNI: solo lo necesario para grupos)
+     * Aplica SOLID: método específico para grupos, no modifica createChat existente
+     */
+    public void createGroupChat(String groupName, List<String> participantIds,
+                                List<String> participantNames, ChatCallback callback) {
+        // Validaciones (KISS: simples y claras)
+        if (groupName == null || groupName.trim().isEmpty()) {
+            if (callback != null) callback.onError("El nombre del grupo es requerido");
+            return;
+        }
+
+        if (participantIds == null || participantIds.size() < 3) {
+            if (callback != null) callback.onError("Se requieren al menos 3 participantes para un grupo");
+            return;
+        }
+
+        // Crear el chat grupal (DRY: reutiliza la estructura existente)
+        Chat newGroupChat = new Chat(participantIds, participantNames);
+        newGroupChat.setGroupName(groupName);
+        newGroupChat.setLastMessage("Grupo creado");
+
+        chatsRef.add(newGroupChat)
+            .addOnSuccessListener(documentReference -> {
+                newGroupChat.setId(documentReference.getId());
+                android.util.Log.d("ChatRepository", "Grupo creado exitosamente: " + documentReference.getId());
+                if (callback != null) callback.onSuccess(newGroupChat);
+            })
+            .addOnFailureListener(e -> {
+                android.util.Log.e("ChatRepository", "Error al crear grupo: " + e.getMessage());
+                if (callback != null) callback.onError(e.getMessage());
+            });
+    }
+
+    /**
      * Busca chat existente
      */
     private void findExistingChat(List<String> participantIds, ChatCallback callback) {

@@ -212,8 +212,11 @@ public class MessageRepository {
      * Cifra el contenido del mensaje antes de enviarlo a Firebase
      */
     private void sendMessage(Message message, MessageCallback callback) {
-        // Cifrar el contenido del mensaje si tiene texto
+        // Guardar el contenido sin cifrar para notificaciones ANTES de cifrar
         if (message.getContent() != null && !message.getContent().isEmpty()) {
+            message.setContentForNotification(message.getContent()); // Guardar sin cifrar
+
+            // Cifrar el contenido del mensaje
             String encryptedContent = CryptoUtil.encrypt(message.getContent(), message.getChatId());
             if (encryptedContent != null) {
                 message.setContent(encryptedContent);
@@ -224,6 +227,9 @@ public class MessageRepository {
                 }
                 return;
             }
+        } else {
+            // Para mensajes sin texto (solo imagen), establecer un valor por defecto
+            message.setContentForNotification("");
         }
 
         messagesRef.add(message)

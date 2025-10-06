@@ -11,6 +11,8 @@ public class Message {
     private MessageType messageType;
     private long timestamp;
     private String imageUrl;
+    // Campo adicional para notificaciones (texto sin cifrar)
+    private String contentForNotification;
 
     public Message() {
     }
@@ -23,6 +25,7 @@ public class Message {
         this.messageType = messageType;
         this.timestamp = System.currentTimeMillis();
         this.imageUrl = "";
+        this.contentForNotification = content; // Guardar sin cifrar
     }
 
     public Message(String id, String chatId, String senderId, String senderName, String content, 
@@ -115,5 +118,15 @@ public class Message {
     @PropertyName("imageUrl")
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @PropertyName("contentForNotification")
+    public String getContentForNotification() {
+        return contentForNotification;
+    }
+
+    @PropertyName("contentForNotification")
+    public void setContentForNotification(String contentForNotification) {
+        this.contentForNotification = contentForNotification;
     }
 }

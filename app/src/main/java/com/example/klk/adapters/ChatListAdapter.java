@@ -74,7 +74,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
     }
 
     /**
-     * Obtiene el nombre del chat para mostrar
+     * Obtiene el nombre del chat para mostrar (DRY: método reutilizable)
+     * Soporta chats individuales y grupales
      */
     private String getChatDisplayName(Chat chat) {
         // Verificar null safety
@@ -86,15 +87,20 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
             return "Chat";
         }
 
+        // Si es un chat grupal con nombre, mostrar el nombre del grupo
+        if (chat.getGroupName() != null && !chat.getGroupName().isEmpty()) {
+            return chat.getGroupName();
+        }
+
+        // Chat individual - mostrar nombre del otro usuario
         if (chat.getParticipantNames().size() == 2) {
-            // Chat individual - mostrar nombre del otro usuario
             for (int i = 0; i < chat.getParticipantIds().size(); i++) {
                 if (!chat.getParticipantIds().get(i).equals(currentUserId)) {
                     return chat.getParticipantNames().get(i);
                 }
             }
         } else if (chat.getParticipantNames().size() > 2) {
-            // Chat grupal - mostrar nombres de todos los participantes
+            // Chat grupal sin nombre - mostrar nombres de participantes
             StringBuilder groupName = new StringBuilder();
             for (int i = 0; i < chat.getParticipantNames().size(); i++) {
                 if (!chat.getParticipantIds().get(i).equals(currentUserId)) {

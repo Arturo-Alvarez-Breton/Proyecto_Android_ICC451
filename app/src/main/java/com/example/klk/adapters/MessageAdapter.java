@@ -38,6 +38,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final List<Message> messages;
     private final String currentUserId;
     private final SimpleDateFormat timeFormat;
+    private boolean isGroupChat = false; // Nuevo campo para detectar chats grupales
 
     /**
      * Interfaz para callbacks de click en imágenes (Open/Closed Principle)
@@ -53,9 +54,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.currentUserId = currentUserId;
         this.messages = new ArrayList<>();
         this.timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-
-        // Implementación por defecto del listener (DRY)
         this.imageClickListener = this::openImageViewer;
+    }
+
+    /**
+     * Establece si el chat es grupal o individual
+     * En chats grupales se muestra el nombre del remitente
+     */
+    public void setGroupChat(boolean isGroupChat) {
+        this.isGroupChat = isGroupChat;
+        notifyDataSetChanged(); // Actualizar vista
     }
 
     /**
@@ -207,8 +215,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public void bind(Message message) {
             textContent.setText(message.getContent());
-            textSenderName.setText(message.getSenderName());
             textTime.setText(formatTime(message.getTimestamp()));
+
+            // Mostrar nombre solo en chats grupales
+            if (isGroupChat) {
+                textSenderName.setText(message.getSenderName());
+                textSenderName.setVisibility(View.VISIBLE);
+            } else {
+                textSenderName.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -256,8 +271,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         public void bind(Message message) {
-            textSenderName.setText(message.getSenderName());
             textTime.setText(formatTime(message.getTimestamp()));
+
+            // Mostrar nombre solo en chats grupales
+            if (isGroupChat) {
+                textSenderName.setText(message.getSenderName());
+                textSenderName.setVisibility(View.VISIBLE);
+            } else {
+                textSenderName.setVisibility(View.GONE);
+            }
 
             // Cargar imagen usando Glide
             Glide.with(context)
@@ -321,8 +343,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public void bind(Message message) {
             textContent.setText(message.getContent());
-            textSenderName.setText(message.getSenderName());
             textTime.setText(formatTime(message.getTimestamp()));
+
+            // Mostrar nombre solo en chats grupales
+            if (isGroupChat) {
+                textSenderName.setText(message.getSenderName());
+                textSenderName.setVisibility(View.VISIBLE);
+            } else {
+                textSenderName.setVisibility(View.GONE);
+            }
 
             // Cargar imagen usando Glide
             Glide.with(context)

@@ -16,6 +16,8 @@ public class Chat {
     private MessageType lastMessageType;
     // Mapa para rastrear mensajes no leídos por usuario (userId -> count)
     private Map<String, Integer> unreadCount;
+    // Nombre del grupo (null para chats 1 a 1)
+    private String groupName;
 
     public Chat() {
         this.unreadCount = new HashMap<>();
@@ -29,6 +31,7 @@ public class Chat {
         this.lastMessageTime = System.currentTimeMillis();
         this.lastMessageType = MessageType.TEXT;
         this.unreadCount = new HashMap<>();
+        this.groupName = null;
     }
 
     public Chat(String id, List<String> participantIds, List<String> participantNames,
@@ -124,6 +127,16 @@ public class Chat {
         this.unreadCount = unreadCount;
     }
 
+    @PropertyName("groupName")
+    public String getGroupName() {
+        return groupName;
+    }
+
+    @PropertyName("groupName")
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
     /**
      * Obtiene el número de mensajes no leídos para un usuario específico
      * @param userId ID del usuario
@@ -144,5 +157,12 @@ public class Chat {
      */
     public boolean hasUnreadMessages(String userId) {
         return getUnreadCountForUser(userId) > 0;
+    }
+
+    /**
+     * Verifica si es un chat grupal
+     */
+    public boolean isGroupChat() {
+        return participantIds != null && participantIds.size() > 2;
     }
 }

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Primary colors -->
+    <color name="primary">#4CAF50</color>
+    <color name="primary_dark">#388E3C</color>
+    <color name="accent">#FF9800</color>
+
     <color name="background_primary">#FFFFFF</color>
     <color name="background_surface">#EEEEEE</color>
     <color name="background_tool_bar">#FFFFFF</color>

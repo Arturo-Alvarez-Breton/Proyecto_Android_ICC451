@@ -21,7 +21,7 @@ setGlobalOptions({ maxInstances: 10 });
 /**
  * Cloud Function que se ejecuta cuando se crea un nuevo mensaje
  * Envía notificación push al receptor del mensaje
- * Soporta chats individuales y grupales
+ * Soporta chats individuales y grupales con cifrado
  */
 exports.sendMessageNotification = onDocumentCreated(
   'messages/{messageId}',
@@ -35,7 +35,8 @@ exports.sendMessageNotification = onDocumentCreated(
       // Extraer datos del mensaje
       const senderId = message.senderId;
       const senderName = message.senderName || 'Usuario';
-      const messageContent = message.content || '';
+      // CORREGIDO: Usar contentForNotification (sin cifrar) en lugar de content (cifrado)
+      const messageContent = message.contentForNotification || '';
       const messageType = message.messageType || 'TEXT';
       const chatId = message.chatId;
 
@@ -59,6 +60,7 @@ exports.sendMessageNotification = onDocumentCreated(
       const chatData = chatDoc.data();
       const participantIds = chatData.participantIds || [];
       const isGroupChat = participantIds.length > 2;
+      const groupName = chatData.groupName || null;
 
       // Filtrar participantes (excluir al remitente)
       const receiverIds = participantIds.filter(id => id !== senderId);
@@ -83,9 +85,18 @@ exports.sendMessageNotification = onDocumentCreated(
       // Título de la notificación
       let notificationTitle;
       if (isGroupChat) {
-        // Para grupos: "Nombre del remitente en Nombre del Grupo"
-        const chatName = chatData.name || 'Grupo';
-        notificationTitle = `${senderName} en ${chatName}`;
+        // CORREGIDO: Para grupos, mostrar el nombre del grupo si existe
+        if (groupName) {
+          notificationTitle = `${senderName} en ${groupName}`;
+        } else {
+          // Si no hay nombre de grupo, usar nombres de participantes
+          const participantNames = chatData.participantNames || [];
+          const groupDisplayName = participantNames
+            .filter((name, index) => participantIds[index] !== senderId)
+            .slice(0, 2)
+            .join(', ') || 'Grupo';
+          notificationTitle = `${senderName} en ${groupDisplayName}`;
+        }
       } else {
         // Para chats individuales: solo el nombre del remitente
         notificationTitle = senderName;
@@ -122,7 +133,7 @@ exports.sendMessageNotification = onDocumentCreated(
 
       logger.info(`✅ Encontrados ${validTokens.length} token(s) válido(s)`);
 
-      // Enviar notificaciones a todos los receptores (MÉTODO INDIVIDUAL PARA MEJOR DEBUG)
+      // Enviar notificaciones a todos los receptores
       let successCount = 0;
       let failureCount = 0;
 
@@ -141,13 +152,15 @@ exports.sendMessageNotification = onDocumentCreated(
               messageContent: messageContent,
               messageType: messageType,
               isGroupChat: isGroupChat.toString(),
+              groupName: groupName || '',
               click_action: 'OPEN_CHAT'
             },
             android: {
               priority: 'high',
               notification: {
                 sound: 'default',
-                icon: 'ic_notification'
+                icon: 'ic_notification',
+                channelId: 'klk_messages_channel'
               }
             }
           };
@@ -157,7 +170,6 @@ exports.sendMessageNotification = onDocumentCreated(
           successCount++;
         } catch (error) {
           logger.error(`❌ Error enviando a ${tokenData.userId}:`, error.code || error.message);
-          logger.error(`❌ Detalles del error:`, JSON.stringify(error));
           failureCount++;
 
           // Limpiar token inválido
@@ -189,4 +201,5 @@ exports.sendMessageNotification = onDocumentCreated(
   }
 );
 
-logger.info('🚀 Cloud Functions inicializadas - Soporta chats individuales y grupales');
+logger.info('🚀 Cloud Functions inicializadas - Soporta chats individuales y grupales con cifrado');
+

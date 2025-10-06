@@ -494,7 +494,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Obtiene el nombre del chat para mostrar
+     * Obtiene el nombre del chat para mostrar (DRY: método reutilizable)
+     * Soporta chats individuales y grupales
      */
     private String getChatDisplayName(Chat chat) {
         // Verificar null safety para cuentas nuevas
@@ -506,6 +507,11 @@ public class MainActivity extends AppCompatActivity {
             return "Chat";
         }
 
+        // Si es un chat grupal con nombre, mostrar el nombre del grupo
+        if (chat.getGroupName() != null && !chat.getGroupName().isEmpty()) {
+            return chat.getGroupName();
+        }
+
         if (chat.getParticipantNames().size() == 2) {
             // Chat individual - mostrar nombre del otro usuario
             for (int i = 0; i < chat.getParticipantIds().size(); i++) {
@@ -514,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         } else if (chat.getParticipantNames().size() > 2) {
-            // Chat grupal - mostrar nombres de participantes
+            // Chat grupal sin nombre - mostrar nombres de participantes
             StringBuilder groupName = new StringBuilder();
             for (int i = 0; i < chat.getParticipantNames().size(); i++) {
                 if (!chat.getParticipantIds().get(i).equals(currentUserId)) {

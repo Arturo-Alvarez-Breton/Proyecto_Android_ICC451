@@ -40,6 +40,7 @@ public class ChatActivity extends AppCompatActivity {
 
     // UI Components
     private TextView textChatTitle;
+    private TextView textChatSubtitle;
     private RecyclerView recyclerViewMessages;
     private EditText editTextMessage;
     private ImageButton buttonSendMessage;
@@ -60,6 +61,7 @@ public class ChatActivity extends AppCompatActivity {
     private String chatName;
     private String currentUserId;
     private String currentUserName;
+    private boolean isGroupChat = false;
 
     public static final String EXTRA_CHAT_ID = "chat_id";
     private Uri selectedImageUri;
@@ -122,6 +124,7 @@ public class ChatActivity extends AppCompatActivity {
     private void initializeComponents() {
         // UI Components
         textChatTitle = findViewById(R.id.textChatTitle);
+        textChatSubtitle = findViewById(R.id.textChatSubtitle);
         recyclerViewMessages = findViewById(R.id.recyclerViewMessages);
         editTextMessage = findViewById(R.id.editTextMessage);
         buttonSendMessage = findViewById(R.id.buttonSendMessage);
@@ -155,6 +158,80 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         textChatTitle.setText(chatName);
+
+        // Cargar información completa del chat para mostrar participantes
+        loadChatInfo();
+    }
+
+    /**
+     * Carga la información del chat desde Firestore para mostrar participantes
+     */
+    private void loadChatInfo() {
+        ChatRepository chatRepository = ChatRepository.getInstance();
+
+        // Obtener el documento del chat desde Firestore
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+            .collection("chats")
+            .document(chatId)
+            .get()
+            .addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    com.example.klk.models.Chat chat = documentSnapshot.toObject(com.example.klk.models.Chat.class);
+                    if (chat != null) {
+                        chat.setId(documentSnapshot.getId());
+                        updateChatHeader(chat);
+                    }
+                }
+            })
+            .addOnFailureListener(e -> {
+                // Si falla, solo mostrar el nombre que ya tenemos
+                android.util.Log.e("ChatActivity", "Error cargando info del chat: " + e.getMessage());
+            });
+    }
+
+    /**
+     * Actualiza el header del chat con información completa
+     */
+    private void updateChatHeader(com.example.klk.models.Chat chat) {
+        // Verificar si es un chat grupal
+        isGroupChat = chat.getParticipantIds() != null && chat.getParticipantIds().size() > 2;
+
+        // Informar al adaptador si es chat grupal (para mostrar nombres de remitentes)
+        if (messageAdapter != null) {
+            messageAdapter.setGroupChat(isGroupChat);
+        }
+
+        if (isGroupChat) {
+            // Para grupos: mostrar el nombre del grupo en el título
+            if (chat.getGroupName() != null && !chat.getGroupName().isEmpty()) {
+                textChatTitle.setText(chat.getGroupName());
+            }
+
+            // Mostrar participantes en el subtítulo (excluyendo al usuario actual)
+            if (chat.getParticipantNames() != null && !chat.getParticipantNames().isEmpty()) {
+                StringBuilder participants = new StringBuilder();
+                int count = 0;
+
+                for (int i = 0; i < chat.getParticipantIds().size(); i++) {
+                    String participantId = chat.getParticipantIds().get(i);
+                    if (!participantId.equals(currentUserId)) {
+                        if (count > 0) {
+                            participants.append(", ");
+                        }
+                        participants.append(chat.getParticipantNames().get(i));
+                        count++;
+                    }
+                }
+
+                if (participants.length() > 0) {
+                    textChatSubtitle.setText(participants.toString());
+                    textChatSubtitle.setVisibility(View.VISIBLE);
+                }
+            }
+        } else {
+            // Para chats individuales, no mostrar subtítulo
+            textChatSubtitle.setVisibility(View.GONE);
+        }
     }
 
     /**

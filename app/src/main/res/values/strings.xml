@@ -62,6 +62,11 @@
     <!-- Create Group Activity strings -->
     <string name="title_create_group">Crear Grupo</string>
     <string name="coming_soon_create_group">Funcionalidad de grupos próximamente</string>
+    <string name="btn_create_group">Crear grupo</string>
+    <string name="hint_group_name">Nombre del grupo</string>
+    <string name="selected_members">Miembros seleccionados: 0</string>
+    <string name="no_users_found">No se encontraron usuarios</string>
+    <string name="profile_image">Imagen de perfil</string>
 
     <!-- Notificaciones Push (FCM) -->
     <string name="default_notification_channel_id">klk_messages_channel</string>
