@@ -219,6 +219,11 @@ public class ChatRepository {
         newGroupChat.setGroupName(groupName);
         newGroupChat.setLastMessage("Grupo creado");
 
+        // Asignar al primer usuario (creador) como administrador inicial
+        List<String> adminIds = new ArrayList<>();
+        adminIds.add(participantIds.get(0)); // El primer usuario es el creador
+        newGroupChat.setAdminIds(adminIds);
+
         chatsRef.add(newGroupChat)
             .addOnSuccessListener(documentReference -> {
                 newGroupChat.setId(documentReference.getId());

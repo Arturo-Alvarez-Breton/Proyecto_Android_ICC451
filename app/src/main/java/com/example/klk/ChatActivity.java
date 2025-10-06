@@ -269,6 +269,23 @@ public class ChatActivity extends AppCompatActivity {
         setupBackButtonListener();
         setupAttachImageListener();
         setupCancelImageButtonListener();
+        setupGroupInfoListener();
+    }
+
+    /**
+     * Configura el listener para abrir la información del grupo al tocar el título
+     */
+    private void setupGroupInfoListener() {
+        View.OnClickListener groupInfoListener = v -> {
+            if (isGroupChat && chatId != null) {
+                Intent intent = new Intent(ChatActivity.this, GroupInfoActivity.class);
+                intent.putExtra(GroupInfoActivity.EXTRA_CHAT_ID, chatId);
+                startActivity(intent);
+            }
+        };
+
+        textChatTitle.setOnClickListener(groupInfoListener);
+        textChatSubtitle.setOnClickListener(groupInfoListener);
     }
 
     /**

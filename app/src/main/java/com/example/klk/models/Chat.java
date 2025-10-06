@@ -18,9 +18,16 @@ public class Chat {
     private Map<String, Integer> unreadCount;
     // Nombre del grupo (null para chats 1 a 1)
     private String groupName;
+    // URL de la foto del grupo
+    private String groupPhotoUrl;
+    // Lista de IDs de usuarios administradores del grupo
+    private List<String> adminIds;
+    // Timestamp de creación del grupo
+    private long createdAt;
 
     public Chat() {
         this.unreadCount = new HashMap<>();
+        this.createdAt = System.currentTimeMillis();
     }
 
     public Chat(List<String> participantIds, List<String> participantNames) {
@@ -32,6 +39,9 @@ public class Chat {
         this.lastMessageType = MessageType.TEXT;
         this.unreadCount = new HashMap<>();
         this.groupName = null;
+        this.groupPhotoUrl = null;
+        this.adminIds = null;
+        this.createdAt = System.currentTimeMillis();
     }
 
     public Chat(String id, List<String> participantIds, List<String> participantNames,
@@ -45,6 +55,9 @@ public class Chat {
         this.lastMessageTime = lastMessageTime;
         this.lastMessageType = lastMessageType;
         this.unreadCount = new HashMap<>();
+        this.groupPhotoUrl = null;
+        this.adminIds = null;
+        this.createdAt = System.currentTimeMillis();
     }
 
     @PropertyName("id")
@@ -137,6 +150,36 @@ public class Chat {
         this.groupName = groupName;
     }
 
+    @PropertyName("groupPhotoUrl")
+    public String getGroupPhotoUrl() {
+        return groupPhotoUrl;
+    }
+
+    @PropertyName("groupPhotoUrl")
+    public void setGroupPhotoUrl(String groupPhotoUrl) {
+        this.groupPhotoUrl = groupPhotoUrl;
+    }
+
+    @PropertyName("adminIds")
+    public List<String> getAdminIds() {
+        return adminIds;
+    }
+
+    @PropertyName("adminIds")
+    public void setAdminIds(List<String> adminIds) {
+        this.adminIds = adminIds;
+    }
+
+    @PropertyName("createdAt")
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    @PropertyName("createdAt")
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+    }
+
     /**
      * Obtiene el número de mensajes no leídos para un usuario específico
      * @param userId ID del usuario
@@ -164,5 +207,12 @@ public class Chat {
      */
     public boolean isGroupChat() {
         return participantIds != null && participantIds.size() > 2;
+    }
+
+    /**
+     * Verifica si un usuario es administrador del grupo
+     */
+    public boolean isAdmin(String userId) {
+        return adminIds != null && adminIds.contains(userId);
     }
 }

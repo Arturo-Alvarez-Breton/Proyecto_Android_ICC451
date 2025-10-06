@@ -73,6 +73,13 @@ public class User {
         this.profileImageUrl = profileImageUrl;
     }
 
+    /**
+     * Alias para getProfileImageUrl para compatibilidad
+     */
+    public String getPhotoUrl() {
+        return profileImageUrl;
+    }
+
     @PropertyName("isOnline")
     public boolean isOnline() {
         return isOnline;

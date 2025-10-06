@@ -69,6 +69,15 @@
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".MainActivity"/>
+        </activity> <!-- Group Info Activity - Pantalla de información y gestión del grupo -->
+        <activity
+                android:name=".GroupInfoActivity"
+                android:exported="false"
+                android:parentActivityName=".ChatActivity"
+                android:theme="@style/Theme.Klk">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ChatActivity"/>
         </activity> <!-- Image Viewer Activity - Pantalla para ver imágenes en pantalla completa -->
         <activity
                 android:name=".ImageViewerActivity"
