@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fabMenuContainer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end">
+
+    <!-- Overlay transparente para cerrar el menú -->
+    <View
+        android:id="@+id/fabMenuOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Contenedor para chat individual -->
+
+    <!-- Contenedor para crear grupo -->
+
+    <!-- Botón principal mejorado -->
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardIndividualChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toTopOf="@+id/cardCreateGroup"
+            app:layout_constraintEnd_toEndOf="@+id/fabMain"
+            app:layout_constraintStart_toStartOf="@+id/fabMain"
+            tools:visibility="visible" app:layout_constraintHorizontal_bias="0.843">
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="14dp"
+                android:background="@color/background_surface">
+
+            <TextView
+                    android:id="@+id/labelIndividualChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_individual_chat"
+                    android:textColor="@color/text_on_background"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabIndividualChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/btn_login"
+                    android:contentDescription="@string/fab_individual_chat"
+                    android:src="@drawable/baseline_person_add_24"
+                    app:borderWidth="0dp"
+                    app:fabSize="auto"
+                    app:tint="@color/white"
+            />
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+            android:id="@+id/cardCreateGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toTopOf="@+id/fabMain"
+            app:layout_constraintEnd_toEndOf="@+id/fabMain"
+            app:layout_constraintStart_toStartOf="@+id/fabMain"
+            tools:visibility="visible"
+            app:layout_constraintHorizontal_bias="0.83">
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="14dp"
+                android:background="@color/background_surface">
+
+            <TextView
+                    android:id="@+id/labelCreateGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_create_group"
+                    android:textColor="@color/text_on_background"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabCreateGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/btn_new_group"
+                    android:contentDescription="@string/fab_create_group"
+                    android:src="@drawable/baseline_group_add_24"
+                    app:borderWidth="0dp"
+                    app:fabSize="auto"
+                    app:tint="@color/white"
+                    android:layout_marginStart="8dp"/>
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/btn_login"
+            android:contentDescription="@string/fab_add"
+            android:src="@drawable/baseline_add_24"
+            app:borderWidth="0dp"
+            app:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:rippleColor="@color/white"
+            app:tint="@color/white"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+    />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

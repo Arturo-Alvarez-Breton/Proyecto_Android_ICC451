@@ -1,0 +1,112 @@
+<resources>
+    <!-- Branding -->
+    <string name="app_name">KlK</string>
+    <string name="app_title">KlK</string>
+
+    <!-- Welcome messages -->
+    <string name="welcome_message">¡Bienvenido a KlK!</string>
+    <string name="welcome_user">¡Hola, %1$s!</string>
+    <string name="firebase_auth_feature">✓ Autenticación con Firebase</string>
+
+    <!-- Buttons -->
+    <string name="btn_login">Iniciar sesión</string>
+    <string name="btn_register">Registrarse</string>
+    <string name="action_login">Iniciar sesión</string>
+    <string name="action_register">Registrarse</string>
+
+    <!-- Toggle prompts -->
+    <string name="prompt_already_have_account">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="prompt_no_account">¿No tienes cuenta? Regístrate</string>
+
+    <!-- Other UI strings -->
+    <string name="btn_logout">Cerrar sesión</string>
+    <string name="btn_new_group">Nuevo grupo</string>
+    <string name="input_search_bar">Buscar</string>
+    <string name="input_email">Correo electrónico</string>
+    <string name="input_username">Usuario</string>
+    <string name="input_full_name">Nombre de Usuario</string>
+    <string name="input_password">Contraseña</string>
+    <string name="app_version">App Version 0.0.8</string>
+    <string name="btn_all_chats_filter">Todos</string>
+    <string name="btn_groups_chats_filter">Grupos</string>
+    <string name="btn_contacts_chats_filter">Contactos</string>
+
+    <!-- Chat functionality strings -->
+    <string name="btn_back">Volver</string>
+    <string name="btn_send_message">Enviar mensaje</string>
+    <string name="btn_attach_image">Adjuntar imagen</string>
+    <string name="hint_type_message">Escribe un mensaje...</string>
+    <string name="desc_message_image">Imagen del mensaje</string>
+    <string name="desc_image_preview">Vista previa de imagen</string>
+    <string name="btn_send_image">Enviar imagen</string>
+    <string name="btn_cancel">Cancelar</string>
+
+    <!-- Chat activity strings -->
+    <string name="error_invalid_chat_data">Error: Datos del chat no válidos</string>
+    <string name="error_send_message">Error al enviar mensaje: %1$s</string>
+    <string name="info_image_feature_coming_soon">Funcionalidad de imágenes próximamente</string>
+
+    <!-- Add User Activity strings -->
+    <string name="title_add_user">Agregar Usuario</string>
+    <string name="hint_search_users">Buscar usuarios por nombre o email</string>
+    <string name="empty_state_no_users">No hay usuarios registrados</string>
+    <string name="desc_profile_image">Imagen de perfil</string>
+
+    <!-- FAB Menu strings -->
+    <string name="fab_add">Agregar</string>
+    <string name="fab_individual_chat">Chat individual</string>
+    <string name="fab_create_group">Crear grupo</string>
+    <string name="label_individual_chat">Chat Individual</string>
+    <string name="label_create_group">Crear Grupo</string>
+
+    <!-- Create Group Activity strings -->
+    <string name="title_create_group">Crear Grupo</string>
+    <string name="coming_soon_create_group">Funcionalidad de grupos próximamente</string>
+    <string name="btn_create_group">Crear grupo</string>
+    <string name="hint_group_name">Nombre del grupo</string>
+    <string name="selected_members">Miembros seleccionados: 0</string>
+    <string name="no_users_found">No se encontraron usuarios</string>
+    <string name="profile_image">Imagen de perfil</string>
+
+    <!-- Notificaciones Push (FCM) -->
+    <string name="default_notification_channel_id">klk_messages_channel</string>
+    <string name="notification_channel_name">Mensajes de KlK</string>
+    <string name="notification_channel_description">Notificaciones de mensajes nuevos en tus chats</string>
+    <string name="notification_new_message_title">Nuevo mensaje de %1$s</string>
+    <string name="notification_new_message_default_title">Nuevo mensaje</string>
+    <string name="notification_new_image_message">📷 Imagen</string>
+    <string name="notification_permission_rationale_title">Activa las notificaciones</string>
+    <string name="notification_permission_rationale_message">Para recibir mensajes en tiempo real, necesitamos tu
+        permiso para mostrar notificaciones.
+    </string>
+    <string name="notification_permission_ok">Activar</string>
+    <string name="notification_permission_no_thanks">Ahora no</string>
+
+    <!-- Image Viewer Activity strings -->
+    <string name="image_fullscreen_description">Imagen en pantalla completa</string>
+    <string name="close_image">Cerrar imagen</string>
+    <string name="error_loading_image">Error al cargar la imagen</string>
+    <string name="image_from">Imagen de %1$s</string>
+    <string name="action_save_profile">Actualizar Perfil</string>
+    <string name="desc_profile_picture">Foto de Perfil</string>
+    <string name="back_button">regresar</string>
+    <string name="title_user_profile">Mi Perfil</string>
+
+    <!-- User Profile Activity strings -->
+    <string name="btn_change_photo">Cambiar foto</string>
+    <string name="input_current_password">Contraseña actual</string>
+    <string name="input_new_password">Nueva contraseña</string>
+    <string name="helper_password_optional">Deja en blanco para mantener la contraseña actual</string>
+    <string name="error_name_required">El nombre es obligatorio</string>
+    <string name="error_current_password_required">La contraseña actual es obligatoria para cambios</string>
+    <string name="error_weak_password">La nueva contraseña debe tener al menos 6 caracteres</string>
+    <string name="success_profile_updated">Perfil actualizado exitosamente</string>
+    <string name="error_updating_profile">Error al actualizar el perfil: %1$s</string>
+    <string name="error_loading_profile">Error al cargar el perfil del usuario</string>
+    <string name="confirm_discard_changes">¿Descartar los cambios realizados?</string>
+    <string name="btn_discard">Descartar</string>
+    <string name="btn_keep_editing">Continuar editando</string>
+
+    <!-- Menu strings -->
+    <string name="menu_my_profile">Mi Perfil</string>
+</resources>

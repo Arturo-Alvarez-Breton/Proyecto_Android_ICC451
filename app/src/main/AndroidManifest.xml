@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
+    <!-- Permisos necesarios para Firebase Authentication -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission
+            android:name="android.permission.READ_MEDIA_IMAGES"/> <!-- Permiso para notificaciones en Android 13+ (API 33+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <application
+            android:allowBackup="true"
+            android:dataExtractionRules="@xml/data_extraction_rules"
+            android:fullBackupContent="@xml/backup_rules"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/Theme.Klk"
+            tools:targetApi="31">
+        <activity
+                android:name=".user_profile"
+                android:exported="false"/>
+        <!-- Splash Activity - Pantalla de inicio -->
+        <activity
+                android:name=".SplashActivity"
+                android:exported="true"
+                android:theme="@style/Theme.Klk.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity> <!-- Login Activity - Autenticación -->
+        <activity
+                android:name=".Login"
+                android:exported="false"
+                android:theme="@style/Theme.Klk.NoActionBar"
+                android:windowSoftInputMode="adjustResize"/> <!-- Main Activity - Pantalla principal del chat -->
+        <activity
+                android:name=".MainActivity"
+                android:exported="false"
+                android:theme="@style/Theme.Klk"/> <!-- Chat Activity - Pantalla de mensajería en tiempo real -->
+        <activity
+                android:name=".ChatActivity"
+                android:exported="false"
+                android:parentActivityName=".MainActivity"
+                android:theme="@style/Theme.Klk"
+                android:windowSoftInputMode="adjustResize">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
+        </activity> <!-- Add User Activity - Pantalla para agregar usuarios -->
+        <activity
+                android:name=".AddUserActivity"
+                android:exported="false"
+                android:parentActivityName=".MainActivity"
+                android:theme="@style/Theme.Klk">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
+        </activity> <!-- Create Group Activity - Pantalla para crear grupos -->
+        <activity
+                android:name=".CreateGroupActivity"
+                android:exported="false"
+                android:parentActivityName=".MainActivity"
+                android:theme="@style/Theme.Klk">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
+        </activity> <!-- Group Info Activity - Pantalla de información y gestión del grupo -->
+        <activity
+                android:name=".GroupInfoActivity"
+                android:exported="false"
+                android:parentActivityName=".ChatActivity"
+                android:theme="@style/Theme.Klk">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ChatActivity"/>
+        </activity> <!-- Image Viewer Activity - Pantalla para ver imágenes en pantalla completa -->
+        <activity
+                android:name=".ImageViewerActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Klk.Fullscreen"/> <!-- Servicio de Firebase Cloud Messaging -->
+        <service
+                android:name=".services.FCMNotificationService"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service> <!-- Configuración predeterminada de notificaciones FCM -->
+        <!-- Ícono predeterminado para notificaciones -->
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_notification"/> <!-- Color predeterminado para notificaciones -->
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_color"
+                android:resource="@color/btn_login"/> <!-- Canal de notificaciones predeterminado para Android 8.0+ -->
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel_id"
+                android:value="@string/default_notification_channel_id"/>
+    </application>
+
+</manifest>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Avatar with Circular Shape -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageViewAvatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_user_placeholder"
+        android:scaleType="centerCrop"
+        android:background="@color/primary_light"
+        app:shapeAppearanceOverlay="@style/CircleImageView"
+        android:contentDescription="Avatar del participante"/>
+
+    <!-- Name and Admin Label Container -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="12dp">
+
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre del participante"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/textViewAdminLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Administrador"
+            android:textSize="12sp"
+            android:textColor="@color/primary"
+            android:visibility="gone"
+            android:layout_marginTop="2dp"/>
+
+    </LinearLayout>
+
+    <!-- Toggle Admin Button -->
+    <ImageButton
+        android:id="@+id/buttonToggleAdmin"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_add_admin"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Hacer/Quitar admin"
+        android:tint="@color/primary"
+        android:padding="8dp"
+        android:visibility="gone"/>
+
+    <!-- Remove Button -->
+    <ImageButton
+        android:id="@+id/buttonRemove"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_remove_user"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Quitar del grupo"
+        android:tint="@android:color/holo_red_dark"
+        android:padding="8dp"
+        android:visibility="gone"/>
+
+</LinearLayout>
