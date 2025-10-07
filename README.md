@@ -414,8 +414,6 @@ La aplicación incluye las siguientes pantallas:
 
 **Curso:** ICC451 - Desarrollo de Aplicaciones Móviles  
 **Institución:** Pontificia Universidad Católica Madre y Maestra (PUCMM)  
-**Semestre:** Segundo Semestre 2025
-
 ---
 
 **Última actualización:** Octubre 2025  
